@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 from distutils.core import setup
 
-setup(name='Object recognition core',
+setup(name='Object recognition modules for ROS',
       version='1.0.0',
-      description='The core of object recognition',
+      description='The ROS modules of object recognition',
       packages=['object_recognition_ros', 'object_recognition_ros.io',
-                'object_recognition_ros.io.ros', 'object_recognition_ros.io.ros.source',
-                'object_recognition_ros.io.ros.sink'],
+                'object_recognition_ros.io', 'object_recognition_ros.io.source',
+                'object_recognition_ros.io.sink'],
       package_dir={'':'python'}
 )
