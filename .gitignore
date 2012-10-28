@@ -1,0 +1,13 @@
+build*/
+._*
+*.pyc
+.*
+python/ecto/ui/uic.py
+\#*\#
+*~
+Makefile
+boost.lockfree/
+boost.atomic/
+bgr
+*.dot
+*.svg
