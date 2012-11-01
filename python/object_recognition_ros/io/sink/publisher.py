@@ -3,7 +3,7 @@ Module defining several outputs for the object recognition pipeline
 """
 
 from object_recognition_core.boost.interface import ObjectDbParameters
-from object_recognition_core.ecto_cells.io_ros import MsgAssembler, VisualizationMsgAssembler, Publisher_MarkerArray
+from object_recognition_ros.ecto_cells.io_ros import MsgAssembler, VisualizationMsgAssembler, Publisher_MarkerArray
 from object_recognition_core.io.sink import Sink
 import ecto
 import ecto_ros.ecto_geometry_msgs as ecto_geometry_msgs

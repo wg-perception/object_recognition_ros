@@ -1,9 +1,7 @@
 # create the cells to output messages
 
 find_package(ecto_ros QUIET)
-if (NOT ecto_ros_FOUND)
-  return()
-endif()
+find_package(object_recognition_core REQUIRED)
 find_package(object_recognition_msgs REQUIRED)
 
 if (ROS_GROOVY_FOUND)
@@ -18,11 +16,13 @@ find_package(PCL REQUIRED)
 include_directories(SYSTEM
                     ${EIGEN_INCLUDE_DIRS}
                     ${ecto_ros_INCLUDE_DIRS}
+                    ${catkin_INCLUDE_DIRS}
                     ${geometry_msgs_INCLUDE_DIRS}
+                    ${object_recognition_core_INCLUDE_DIRS}
                     ${PCL_INCLUDE_DIRS}
 )
 
-ectomodule(io_ros DESTINATION object_recognition_core/ecto_cells
+ectomodule(io_ros DESTINATION ${PROJECT_NAME}/ecto_cells
                   INSTALL
            module.cpp
            MsgAssembler.cpp
