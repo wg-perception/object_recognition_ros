@@ -52,12 +52,12 @@ class RecognitionServer:
         '''
         obj = yaml.load(data.data) #parse the yaml into a dictionary
         self.object_ids = [] # create a list of object_ids.
-	print obj
-	if obj['object_ids'] is None:
-	    print 'No objects found!'
-	    return
+        print obj
+        if obj['object_ids'] is None:
+          print 'No objects found!'
+          return
         for x in obj['object_ids']:
-            self.object_ids.append(str(x))
+          self.object_ids.append(str(x))
 
     def execute(self, goal):
         # Do lots of awesome groundbreaking robot stuff here
@@ -74,7 +74,7 @@ class RecognitionServer:
             result.confidence.append(1.0) # 50/50
         #we have a result!
         self.server.set_succeeded(result=result)
-        
+
         #reset our instance variable for the next round
         self.poses = None
         self.object_ids = None
