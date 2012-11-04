@@ -19,13 +19,11 @@ ectomodule(io_ros DESTINATION ${PROJECT_NAME}/ecto_cells
            VisualizationMsgAssembler.cpp
 )
 
-link_ecto(io_ros
-          ${geometry_msgs_LIBRARIES}
-          ${sensor_msgs_LIBRARIES}
-          ${OpenCV_LIBRARIES}
-          ${PCL_LIBRARIES}
-          ${rosbag_LIBRARIES}
-          ${roscpp_LIBRARIES}
-          object_recognition_core_db
-          object_recognition_core_common
+link_ecto(io_ros ${catkin_LIBRARIES}
+                 ${geometry_msgs_LIBRARIES}
+                 ${sensor_msgs_LIBRARIES}
+                 ${OpenCV_LIBRARIES}
+                 ${PCL_LIBRARIES}
+                 ${rosbag_LIBRARIES}
+                 ${roscpp_LIBRARIES}
 )
