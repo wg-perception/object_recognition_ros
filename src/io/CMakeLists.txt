@@ -1,15 +1,4 @@
 # create the cells to output messages
-
-find_package(ecto_ros QUIET)
-find_package(object_recognition_core REQUIRED)
-find_package(object_recognition_msgs REQUIRED)
-
-if (ROS_GROOVY_FOUND)
-find_package(catkin REQUIRED geometry_msgs rosbag roscpp sensor_msgs visualization_msgs)
-else()
-find_package(ROS REQUIRED geometry_msgs rosbag roscpp sensor_msgs visualization_msgs)
-endif()
-
 find_package(Eigen REQUIRED)
 find_package(PCL REQUIRED)
 
