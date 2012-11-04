@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(object_recognition_ros)
 
-find_package(catkin)
+find_package(catkin REQUIRED ecto ecto_ros object_recognition_core)
 if (${catkin_VERSION} VERSION_GREATER "0.5.28")
 catkin_package()
 else()
@@ -13,9 +13,7 @@ endif()
 catkin_python_setup()
 
 # build some cells
-find_package(catkin REQUIRED ecto_ros object_recognition_core)
 include_directories(SYSTEM ${catkin_INCLUDE_DIRS})
-find_package(ecto REQUIRED)
 
 add_subdirectory(python)
 
