@@ -84,7 +84,7 @@ namespace object_recognition_core
     declare_io(const ecto::tendrils& params, ecto::tendrils& inputs, ecto::tendrils& outputs)
     {
       inputs.declare < sensor_msgs::ImageConstPtr > ("image_message", "the image message to get the header");
-      inputs.declare(&MsgAssembler::point3d_clusters_, "point3d_clusters", "The sets of 3d points for each object");
+      inputs.declare(&MsgAssembler::point3d_clusters_, "point3d_clusters", "The sets of 3d points for each object. Each object may have more than one set.");
       inputs.declare(&MsgAssembler::pose_results_, "pose_results", "The results of object recognition");
 
       outputs.declare < object_recognition_msgs::RecognizedObjectArrayConstPtr > ("msg", "The poses");
@@ -108,7 +108,15 @@ namespace object_recognition_core
 
       std::string frame_id;
       if ((*image_message_))
+      {
         frame_id = (*image_message_)->header.frame_id;
+        time = (*image_message_)->header.stamp;
+      }
+
+      msg->header.frame_id = frame_id;
+      msg->header.stamp = time;
+
+      const bool clusters_available = point3d_clusters_ && point3d_clusters_->size() == pose_results_->size();
 
       msg->objects.resize(pose_results_->size());
       {
@@ -151,9 +159,13 @@ namespace object_recognition_core
           object.header.frame_id = frame_id;
 
           // Deal with the partial point clouds
-          object.point_clouds.resize(point3d_clusters_->size());
-          for (size_t i = 0; i < point3d_clusters_->size(); ++i)
-            pcl::toROSMsg((*point3d_clusters_)[i], object.point_clouds[i]);
+          if(clusters_available)
+          {
+			  std::vector<pcl::PointCloud<pcl::PointXYZ>, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ> > > & object_clusters = (*point3d_clusters_)[object_id];
+			  object.point_clouds.resize(object_clusters.size());
+			  for (size_t i = 0; i < object_clusters.size(); ++i)
+				pcl::toROSMsg(object_clusters[i], object.point_clouds[i]);
+          }
 
           ++object_id;
         }
@@ -164,7 +176,7 @@ namespace object_recognition_core
       return ecto::OK;
     }
   private:
-    ecto::spore<std::vector<pcl::PointCloud<pcl::PointXYZ>, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ> > > > point3d_clusters_;
+    ecto::spore<std::vector<std::vector<pcl::PointCloud<pcl::PointXYZ>, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ> > > > > point3d_clusters_;
     ecto::spore<std::vector<common::PoseResult> > pose_results_;
     ecto::spore<sensor_msgs::ImageConstPtr> image_message_;
   };
