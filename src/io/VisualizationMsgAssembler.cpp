@@ -185,8 +185,16 @@ namespace object_recognition_core
         or_json::read(recognized_object.id.db, db_params);
         object_recognition_core::db::ObjectDb db = object_recognition_core::db::ObjectDb(
             object_recognition_core::db::ObjectDbParameters(db_params.get_obj()));
-        object_recognition_core::prototypes::ObjectInfo object_info(recognized_object.id.id, db);
-        const or_json::mObject & attributes = object_info.attributes();
+        or_json::mObject attributes;
+        try
+        {
+          object_recognition_core::prototypes::ObjectInfo object_info(recognized_object.id.id, db);
+          attributes = object_info.attributes();
+        }
+        catch (...)
+        {
+          //std::cout << "Object db not initialized" << std::endl;
+        }
 
         // Deal with the marker
         {
