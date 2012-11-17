@@ -157,6 +157,7 @@ namespace object_recognition_core
 
           // Deal with the header
           object.header.frame_id = frame_id;
+          object.header.stamp = time;
 
           // Deal with the partial point clouds
           if(clusters_available)
