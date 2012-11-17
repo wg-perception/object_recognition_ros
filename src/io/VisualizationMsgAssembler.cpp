@@ -234,7 +234,13 @@ namespace object_recognition_core
           marker.header = recognized_object.pose.header;
 
           if (attributes.find("name") != attributes.end())
-          marker.text = attributes.find("name")->second.get_str();
+          {
+        	marker.text = attributes.find("name")->second.get_str();
+          }
+          else
+          {
+        	marker.text = recognized_object.id.id;
+          }
           marker.color.a = 1;
           marker.color.g = 1;
           marker.color.b = 1;
