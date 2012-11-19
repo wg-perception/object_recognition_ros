@@ -1,11 +1,14 @@
 cmake_minimum_required(VERSION 2.8)
 project(object_recognition_ros)
 
-find_package(catkin REQUIRED ecto ecto_ros geometry_msgs object_recognition_core rosbag roscpp sensor_msgs visualization_msgs)
+find_package(catkin REQUIRED ecto ecto_ros geometry_msgs object_recognition_core object_recognition_msgs rosbag roscpp sensor_msgs visualization_msgs)
 
 if (${catkin_VERSION} VERSION_GREATER "0.5.28")
 catkin_package()
 else()
+find_package(ecto)
+find_package(object_recognition_core)
+find_package(object_recognition_msgs)
 catkin_stack()
 catkin_project(object_recognition_ros)
 endif()
