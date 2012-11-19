@@ -1,6 +1,6 @@
 <stack>
   <name>object_recognition_ros</name>
-  <version>0.1.3</version>
+  <version>0.1.5</version>
   <description>object_recognition_core contains tools to launch several recognition pipelines, train objects, store models ...</description>
   <author email="erublee@willowgarage.com">Ethan Rublee</author>
   <author email="vrabaud@willowgarage.com">Vincent Rabaud</author>
@@ -16,6 +16,7 @@
   <build_depends>ecto</build_depends>
   <build_depends>ecto_image_pipeline</build_depends>
   <build_depends>ecto_ros</build_depends>
+  <build_depends>object_recognition_core</build_depends>
   <build_depends>object_recognition_msgs</build_depends>
   <build_depends>pcl</build_depends>
 
@@ -25,6 +26,7 @@
   <depends>ecto</depends>
   <depends>ecto_image_pipeline</depends>
   <depends>ecto_ros</depends>
+  <depends>object_recognition_core</depends>
   <depends>object_recognition_msgs</depends>
   <depends>pcl</depends>
 </stack>
