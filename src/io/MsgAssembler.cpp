@@ -78,13 +78,13 @@ namespace object_recognition_core
     static void
     declare_params(ecto::tendrils& params)
     {
+    	params.declare(&MsgAssembler::publish_clusters_, "publish_clusters", "Sets whether the point cloud clusters have to be published or not", true);
     }
 
     static void
     declare_io(const ecto::tendrils& params, ecto::tendrils& inputs, ecto::tendrils& outputs)
     {
       inputs.declare < sensor_msgs::ImageConstPtr > ("image_message", "the image message to get the header");
-      inputs.declare(&MsgAssembler::point3d_clusters_, "point3d_clusters", "The sets of 3d points for each object. Each object may have more than one set.");
       inputs.declare(&MsgAssembler::pose_results_, "pose_results", "The results of object recognition");
 
       outputs.declare < object_recognition_msgs::RecognizedObjectArrayConstPtr > ("msg", "The poses");
@@ -115,8 +115,6 @@ namespace object_recognition_core
 
       msg->header.frame_id = frame_id;
       msg->header.stamp = time;
-
-      const bool clusters_available = point3d_clusters_ && point3d_clusters_->size() == pose_results_->size();
 
       msg->objects.resize(pose_results_->size());
       {
@@ -160,12 +158,13 @@ namespace object_recognition_core
           object.header.stamp = time;
 
           // Deal with the partial point clouds
-          if(clusters_available)
+          if(*publish_clusters_)
           {
-			  std::vector<pcl::PointCloud<pcl::PointXYZ>, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ> > > & object_clusters = (*point3d_clusters_)[object_id];
-			  object.point_clouds.resize(object_clusters.size());
-			  for (size_t i = 0; i < object_clusters.size(); ++i)
-				pcl::toROSMsg(object_clusters[i], object.point_clouds[i]);
+			  object.point_clouds.resize(pose_result.clouds().size());
+			  for(size_t i = 0; i < pose_result.clouds().size(); ++i)
+			  {
+				  object.point_clouds[i] = *(pose_result.clouds()[i]);
+			  }
           }
 
           ++object_id;
@@ -177,9 +176,9 @@ namespace object_recognition_core
       return ecto::OK;
     }
   private:
-    ecto::spore<std::vector<std::vector<pcl::PointCloud<pcl::PointXYZ>, Eigen::aligned_allocator<pcl::PointCloud<pcl::PointXYZ> > > > > point3d_clusters_;
     ecto::spore<std::vector<common::PoseResult> > pose_results_;
     ecto::spore<sensor_msgs::ImageConstPtr> image_message_;
+    ecto::spore<bool> publish_clusters_;
   };
 }
 

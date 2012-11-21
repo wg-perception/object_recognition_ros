@@ -25,6 +25,7 @@ class PublisherBlackBox(ecto.BlackBox):
     _object_ids_pub = StringPub
     passthrough = ecto.PassthroughN
     _recognized_object_array = Publisher_RecognizedObjectArray
+    _msg_assembler = MsgAssembler()
 
     def __init__(self, do_visualize, **kwargs):
         self._do_visualize = do_visualize
@@ -37,10 +38,9 @@ class PublisherBlackBox(ecto.BlackBox):
         p.declare('recognized_object_array_topic', 'The ROS topic to use for the recognized object', 'recognized_object_array')
         p.declare('latched', 'Determines if the topics will be latched.', True)
         p.declare('db_params', 'The DB parameters', ObjectDbParameters({}))
+        p.forward('publish_clusters', cell_name='_msg_assembler')
 
     def declare_io(self, _p, i, _o):
-        self._msg_assembler = MsgAssembler()
-
         i.forward_all('_msg_assembler')
 
     def configure(self, p, _i, _o):
