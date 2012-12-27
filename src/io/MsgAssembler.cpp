@@ -93,7 +93,7 @@ namespace object_recognition_core
     void
     configure(const ecto::tendrils& params, const ecto::tendrils& inputs, const ecto::tendrils& outputs)
     {
-      ecto::py::scoped_call_back_to_python scb;
+      ECTO_SCOPED_CALLPYTHON();
 
       image_message_ = inputs["image_message"];
       bp::object mapping;
