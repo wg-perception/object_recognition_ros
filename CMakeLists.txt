@@ -11,6 +11,24 @@ find_package(object_recognition_core)
 find_package(object_recognition_msgs)
 catkin_stack()
 catkin_project(object_recognition_ros)
+find_package(ecto)
+find_package(ecto_ros)
+find_package(geometry_msgs)
+find_package(object_recognition_core)
+find_package(object_recognition_msgs)
+find_package(rosbag)
+find_package(roscpp)
+find_package(sensor_msgs)
+find_package(visualization_msgs)
+
+list(APPEND catkin_LIBRARIES ${object_recognition_core_LIBRARIES} 
+                             ${roscpp_LIBRARIES}
+                             ${geometry_msgs_LIBRARIES}
+                             ${sensor_msgs_LIBRARIES}
+                             ${rosbag_LIBRARIES}
+                             ${roscpp_LIBRARIES}
+)
+list(APPEND catkin_INCLUDE_DIRS ${roscpp_INCLUDE_DIRS})
 endif()
 
 #install targets for all things python
