@@ -1,6 +1,6 @@
 <package>
   <name>object_recognition_ros</name>
-  <version>0.1.5</version>
+  <version>0.1.6</version>
   <description>object_recognition_core contains tools to launch several recognition pipelines, train objects, store models ...</description>
   <author email="erublee@willowgarage.com">Ethan Rublee</author>
   <author email="vrabaud@willowgarage.com">Vincent Rabaud</author>
@@ -18,6 +18,7 @@
   <build_depend>object_recognition_core</build_depend>
   <build_depend>object_recognition_msgs</build_depend>
   <build_depend>pcl</build_depend>
+  <build_depend>rviz</build_depend>
 
   <build_depend>actionlib</build_depend>
   <build_depend>boost</build_depend>
@@ -27,6 +28,7 @@
   <build_depend>ecto_image_pipeline</build_depend>
   <build_depend>object_recognition_msgs</build_depend>
   <build_depend>pcl</build_depend>
+  <build_depend>rviz</build_depend>
 
   <test_depend>visualization_msgs</test_depend>
 
