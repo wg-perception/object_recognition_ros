@@ -20,17 +20,21 @@
   <build_depend>pcl</build_depend>
   <build_depend>rviz</build_depend>
 
-  <build_depend>actionlib</build_depend>
-  <build_depend>boost</build_depend>
-  <build_depend>curl</build_depend>
-  <build_depend>ecto</build_depend>
-  <build_depend>ecto_ros</build_depend>
-  <build_depend>ecto_image_pipeline</build_depend>
-  <build_depend>object_recognition_msgs</build_depend>
-  <build_depend>pcl</build_depend>
-  <build_depend>rviz</build_depend>
+  <run_depend>actionlib</run_depend>
+  <run_depend>boost</run_depend>
+  <run_depend>curl</run_depend>
+  <run_depend>ecto</run_depend>
+  <run_depend>ecto_ros</run_depend>
+  <run_depend>ecto_image_pipeline</run_depend>
+  <run_depend>object_recognition_msgs</run_depend>
+  <run_depend>pcl</run_depend>
+  <run_depend>rviz</run_depend>
 
   <test_depend>visualization_msgs</test_depend>
 
   <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+    <rviz plugin="${prefix}/object_recognition_rviz_plugin.xml"/>
+  </export>
 </package>

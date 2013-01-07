@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 2.8)
 project(object_recognition_ros)
 
-find_package(catkin REQUIRED ecto ecto_ros geometry_msgs object_recognition_core object_recognition_msgs rosbag roscpp sensor_msgs visualization_msgs)
+find_package(catkin REQUIRED ecto ecto_ros geometry_msgs object_recognition_core
+                             object_recognition_msgs rosbag roscpp rviz sensor_msgs
+                             visualization_msgs
+)
 
 if (${catkin_VERSION} VERSION_GREATER "0.5.28")
 catkin_package()
@@ -59,3 +62,8 @@ if(BUILD_TEST)
 endif()
 
 #catkin_doxygen(object_recognition_ros-doxygen ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+# install
+install(FILES object_recognition_rviz_plugin.xml
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)

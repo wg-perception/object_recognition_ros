@@ -29,4 +29,8 @@
   <depends>object_recognition_core</depends>
   <depends>object_recognition_msgs</depends>
   <depends>pcl</depends>
+
+  <export>
+    <rviz plugin="${prefix}/object_recognition_rviz_plugin.xml"/>
+  </export>
 </stack>
