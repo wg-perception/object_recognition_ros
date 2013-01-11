@@ -183,8 +183,8 @@ namespace object_recognition_core
 
         or_json::mValue db_params;
         or_json::read(recognized_object.id.db, db_params);
-        object_recognition_core::db::ObjectDb db = object_recognition_core::db::ObjectDb(
-            object_recognition_core::db::ObjectDbParameters(db_params.get_obj()));
+
+        object_recognition_core::db::ObjectDbPtr db = object_recognition_core::db::ObjectDbParameters(db_params.get_obj()).generateDb();
         or_json::mObject attributes;
         try
         {
