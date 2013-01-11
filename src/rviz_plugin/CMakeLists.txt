@@ -1,3 +1,7 @@
+if (${ROS_FUERTE_FOUND})
+return()
+endif()
+
 include_directories(${catkin_INCLUDE_DIRS})
 
 find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)

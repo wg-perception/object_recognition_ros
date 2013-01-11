@@ -31,7 +31,11 @@
 #define IMU_DISPLAY_H
 
 #include <sensor_msgs/Imu.h>
+#if ROS_FUERTE_FOUND
+#include <rviz/display.h>
+#else
 #include <rviz/message_filter_display.h>
+#endif
 
 namespace Ogre
 {

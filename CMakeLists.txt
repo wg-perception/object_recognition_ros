@@ -1,12 +1,13 @@
 cmake_minimum_required(VERSION 2.8)
 project(object_recognition_ros)
 
-find_package(catkin REQUIRED ecto ecto_ros geometry_msgs object_recognition_core
-                             object_recognition_msgs rosbag roscpp rviz sensor_msgs
-                             visualization_msgs
-)
+find_package(catkin REQUIRED)
 
 if (${catkin_VERSION} VERSION_GREATER "0.5.28")
+find_package(catkin REQUIRED ecto ecto_ros geometry_msgs object_recognition_core
+                             object_recognition_msgs rosbag roscpp rviz sensor_msgs tf
+                             visualization_msgs
+)
 catkin_package()
 else()
 find_package(ecto)
@@ -30,8 +31,17 @@ list(APPEND catkin_LIBRARIES ${object_recognition_core_LIBRARIES}
                              ${sensor_msgs_LIBRARIES}
                              ${rosbag_LIBRARIES}
                              ${roscpp_LIBRARIES}
+                             /opt/ros/fuerte/stacks/geometry/tf/lib/libtf.so
 )
-list(APPEND catkin_INCLUDE_DIRS ${roscpp_INCLUDE_DIRS})
+list(APPEND catkin_INCLUDE_DIRS ${roscpp_INCLUDE_DIRS}
+                                /opt/ros/fuerte/stacks/geometry/tf/include/
+                                /opt/ros/fuerte/stacks/bullet/include/
+                                /opt/ros/fuerte/stacks/geometry/tf/msg_gen/cpp/include/
+                                /opt/ros/fuerte/stacks/geometry/tf/srv_gen/cpp/include/
+                                /opt/ros/fuerte/stacks/visualization/rviz/src/
+                                /opt/ros/fuerte/stacks/pluginlib/include/
+)
+add_definitions(-DROS_FUERTE_FOUND=1)
 endif()
 
 #install targets for all things python
@@ -64,6 +74,10 @@ endif()
 #catkin_doxygen(object_recognition_ros-doxygen ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # install
+if (ROS_FUERTE_FOUND)
+set(CATKIN_PACKAGE_SHARE_DESTINATION share/${PROJECT_NAME}/)
+endif()
+
 install(FILES object_recognition_rviz_plugin.xml
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )

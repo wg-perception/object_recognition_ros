@@ -1,4 +1,4 @@
-<stack>
+<package>
   <name>object_recognition_ros</name>
   <version>0.1.6</version>
   <description>object_recognition_core contains tools to launch several recognition pipelines, train objects, store models ...</description>
@@ -29,4 +29,8 @@
   <depends>object_recognition_core</depends>
   <depends>object_recognition_msgs</depends>
   <depends>pcl</depends>
-</stack>
+
+  <export>
+    <rviz plugin="${prefix}/object_recognition_rviz_plugin.xml"/>
+  </export>
+</package>
