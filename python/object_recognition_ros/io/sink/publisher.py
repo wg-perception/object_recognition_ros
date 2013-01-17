@@ -4,7 +4,7 @@ Module defining several outputs for the object recognition pipeline
 
 from object_recognition_core.boost.interface import ObjectDbParameters
 from object_recognition_ros.ecto_cells.io_ros import MsgAssembler, VisualizationMsgAssembler, Publisher_MarkerArray
-from object_recognition_core.io.sink import Sink
+from object_recognition_core.io.sink import SinkBase
 import ecto
 from ecto import BlackBoxCellInfo, BlackBoxForward
 import ecto_ros.ecto_geometry_msgs as ecto_geometry_msgs
@@ -17,19 +17,19 @@ StringPub = ecto_std_msgs.Publisher_String
 
 ########################################################################################################################
 
-class PublisherBlackBox(ecto.BlackBox):
+class Publisher(ecto.BlackBox, SinkBase):
     """Class publishing the different results of object recognition as ROS topics
-    http://ecto.willowgarage.com/releases/amoeba-beta3/ros/geometry_msgs.html#Publisher_PoseArray
     """
-    def __init__(self, do_visualize, **kwargs):
-        self._do_visualize = do_visualize
-        ecto.BlackBox.__init__(self, **kwargs)
+    def __init__(self, *args, **kwargs):
+        ecto.BlackBox.__init__(self, *args, **kwargs)
+        SinkBase.__init__(self)
 
     @classmethod
     def declare_cells(cls, _p):
         return {'msg_assembler': BlackBoxCellInfo(MsgAssembler)}
 
     def declare_direct_params(self, p):
+        p.declare('do_visualize', 'If True some markers are displayed for visualization.', True)
         p.declare('markers_topic', 'The ROS topic to use for the marker array.', 'markers')
         p.declare('pose_topic', 'The ROS topic to use for the pose array.', 'poses')
         p.declare('object_ids_topic', 'The ROS topic to use for the object meta info string', 'object_ids')
@@ -45,7 +45,7 @@ class PublisherBlackBox(ecto.BlackBox):
 
     def configure(self, p, _i, _o):
         self._recognized_object_array = Publisher_RecognizedObjectArray(topic_name=p.recognized_object_array_topic, latched=p.latched)
-        if self._do_visualize:
+        if p.do_visualize:
             self._visualization_msg_assembler = VisualizationMsgAssembler()
             self._pose_pub = PoseArrayPub(topic_name=p.pose_topic, latched=p.latched)
             self._object_ids_pub = StringPub(topic_name=p.object_ids_topic, latched=p.latched)
@@ -55,7 +55,7 @@ class PublisherBlackBox(ecto.BlackBox):
         # connect to a publishing cell
         connections = [ self.msg_assembler['msg'] >> self._recognized_object_array['input']]
 
-        if self._do_visualize:
+        if p.do_visualize:
             connections += [ self.msg_assembler['msg'] >> self._visualization_msg_assembler['msg'] ]
 
             connections += [self._visualization_msg_assembler['pose_message'] >> self._pose_pub[:],
@@ -64,37 +64,3 @@ class PublisherBlackBox(ecto.BlackBox):
                ]
 
         return connections
-
-########################################################################################################################
-
-class Publisher(Sink):
-    """
-    The publisher publishes the default ROS message.
-    visualize: if that parameter is set to True, also send marker messages
-    """
-
-    @classmethod
-    def config_doc(cls):
-        return  """
-                    # The ROS topic to use for the marker array
-                    markers_topic: 'markers'
-                    # The ROS topic to use for the pose array
-                    pose_topic: 'poses'
-                    # The ROS topic to use for the object meta info string
-                    object_ids_topic: 'object_ids'
-                    # The ROS topic to use for the recognized object
-                    recognized_object_array_topic: 'recognized_object_array'
-                    # Determines if the topics will be latched
-                    latched: True
-                    # The DB parameters
-                    db_params: ''
-                """
-
-    @classmethod
-    def type_name(cls):
-        return 'publisher'
-
-    @classmethod
-    def sink(self, *args, **kwargs):
-        do_visualize = kwargs.pop('visualize', False)
-        return PublisherBlackBox(do_visualize, **kwargs)

@@ -1,9 +1,11 @@
 source1:
-  type: openni
-  image_mode: 'SXGA_RES'
-  depth_mode: 'VGA_RES'
-  image_fps: 'FPS_15'
-  depth_fps: 'FPS_30'
+  type: 'OpenNI'
+  module: 'object_recognition_core.io.source'
+  parameters:
+    image_mode: 'SXGA_RES'
+    depth_mode: 'VGA_RES'
+    image_fps: 'FPS_15'
+    depth_fps: 'FPS_30'
 
 #Use this instead to receive images via ROS
 #source1:
@@ -11,46 +13,47 @@ source1:
 #  rgb_frame_id: '/camera_rgb_optical_frame'
 
 sink1:
-  type: publisher
+  type: 'Publisher'
   module: 'object_recognition_ros.io'
-  visualize: true
-  object_ids: 'all'
+  parameters:
+    visualize: true
+    object_ids: 'all'
 
 voter1:
-  type: 'aggregator'
-  sinks: [sink1]
+  type: 'Aggregator'
+  module: 'object_recognition_core.io'
+  outputs: [sink1]
 
 pipeline1:
-  type: 'TOD'
+  type: 'TodDetector'
   module: 'object_recognition_tod'
   subtype:
     type: 'ORB'
-  sources: [source1]
-  voters: [voter1]
+  inputs: [source1]
+  outputs: [voter1]
   parameters:
     object_ids: "all"
     feature:
-      type: 'ORB'
-      module: 'ecto_opencv.features2d'
+      type: ORB
+      module: ecto_opencv.features2d
       n_features: 5000
       n_levels: 3
       scale_factor: 1.2
     descriptor:
-      type: 'ORB'
-      module: 'ecto_opencv.features2d'
-    search:
-      type: 'LSH'
-      module: 'ecto_opencv.features2d'
+      type: ORB
+      module: ecto_opencv.features2d
+    search: 
+      type: LSH
+      module: ecto_opencv.features2d
       key_size: 16
       multi_probe_level: 1
       n_tables: 10
       radius: 35
       ratio: 0.8
-    guess:
-      n_ransac_iterations: 2500
-      min_inliers: 8
+    n_ransac_iterations: 2500
+    min_inliers: 8
     sensor_error: 0.01
     db:
-      type: 'CouchDB'
-      root: 'http://localhost:5984'
-      collection: 'object_recognition'
+      type: CouchDB
+      root: http://localhost:5984
+      collection: object_recognition

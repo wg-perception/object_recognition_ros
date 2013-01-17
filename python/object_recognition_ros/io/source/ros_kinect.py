@@ -2,22 +2,25 @@
 Module defining several outputs for the object recognition pipeline
 """
 
-from object_recognition_core.io.source import Source
 from ecto_image_pipeline.io.source import create_source
+from object_recognition_core.io.source import SourceBase
+import ecto
 
 ########################################################################################################################
 
-class RosKinect(Source):
+class RosKinect(ecto.BlackBox, SourceBase):
+    """
+    A source for any ORK pipeline that listens to Kinect topics
+    """
+    def __init__(self, *args, **kwargs):
+        ecto.BlackBox.__init__(self, *args, **kwargs)
+        SourceBase.__init__(self)
 
-    @classmethod
-    def config_doc(cls):
-        return  """
-                """
+    def declare_cells(self, p):
+        return {'main': create_source(*('image_pipeline', 'OpenNISubscriber'), **p)}
 
-    @classmethod
-    def type_name(cls):
-        return 'ros_kinect'
+    def declare_forwards(self, _p):
+        return ({'main': 'all'}, {'main': 'all'}, {'main': 'all'})
 
-    @classmethod
-    def source(self, *args, **kwargs):
-        return create_source(*('image_pipeline', 'OpenNISubscriber'), **kwargs)
+    def connections(self, _p):
+        return [self.main]

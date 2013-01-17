@@ -1,25 +1,26 @@
 """
-Module defining several outputs for the object recognition pipeline
+Module defining a bag reader cell to use as an input of an object recognition pipeline
 """
 
-from object_recognition_core.io.source import Source
 from ecto_image_pipeline.io.source import create_source
+from object_recognition_core.io.source import SourceBase
+import ecto
 
 ########################################################################################################################
 
-class BagReader(Source):
+class BagReader(ecto.BlackBox, SourceBase):
+    """
+    A source for any ORK pipeline that reads data from a bag
+    """
+    def __init__(self, *args, **kwargs):
+        ecto.BlackBox.__init__(self, *args, **kwargs)
+        SourceBase.__init__(self)
 
-    @classmethod
-    def config_doc(cls):
-        return  """
-                    # The path of the bag to read
-                    bag: ''
-                """
+    def declare_cells(self, p):
+        return {'main': create_source(*('image_pipeline', 'BagReader'), **p)}
 
-    @classmethod
-    def type_name(cls):
-        return 'bag_reader'
+    def declare_forwards(self, _p):
+        return ({'main': 'all'}, {'main': 'all'}, {'main': 'all'})
 
-    @classmethod
-    def source(self, *args, **kwargs):
-        return create_source(*('image_pipeline', 'BagReader'), **kwargs)
+    def connections(self, _p):
+        return [self.main]
