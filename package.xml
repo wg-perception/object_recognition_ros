@@ -35,6 +35,6 @@
   <buildtool_depend>catkin</buildtool_depend>
 
   <export>
-    <rviz plugin="${prefix}/object_recognition_rviz_plugin.xml"/>
+    <rviz plugin="${prefix}/ork_rviz_plugin.xml"/>
   </export>
 </package>

@@ -31,15 +31,15 @@ list(APPEND catkin_LIBRARIES ${object_recognition_core_LIBRARIES}
                              ${sensor_msgs_LIBRARIES}
                              ${rosbag_LIBRARIES}
                              ${roscpp_LIBRARIES}
-                             /opt/ros/fuerte/stacks/geometry/tf/lib/libtf.so
+#                             /opt/ros/fuerte/stacks/geometry/tf/lib/libtf.so
 )
 list(APPEND catkin_INCLUDE_DIRS ${roscpp_INCLUDE_DIRS}
-                                /opt/ros/fuerte/stacks/geometry/tf/include/
-                                /opt/ros/fuerte/stacks/bullet/include/
-                                /opt/ros/fuerte/stacks/geometry/tf/msg_gen/cpp/include/
-                                /opt/ros/fuerte/stacks/geometry/tf/srv_gen/cpp/include/
-                                /opt/ros/fuerte/stacks/visualization/rviz/src/
-                                /opt/ros/fuerte/stacks/pluginlib/include/
+#                                /opt/ros/fuerte/stacks/geometry/tf/include/
+#                                /opt/ros/fuerte/stacks/bullet/include/
+#                                /opt/ros/fuerte/stacks/geometry/tf/msg_gen/cpp/include/
+#                                /opt/ros/fuerte/stacks/geometry/tf/srv_gen/cpp/include/
+#                                /opt/ros/fuerte/stacks/visualization/rviz/src/
+#                                /opt/ros/fuerte/stacks/pluginlib/include/
 )
 add_definitions(-DROS_FUERTE_FOUND=1)
 endif()
@@ -76,8 +76,8 @@ endif()
 # install
 if (ROS_FUERTE_FOUND)
 set(CATKIN_PACKAGE_SHARE_DESTINATION share/${PROJECT_NAME}/)
-endif()
-
-install(FILES object_recognition_rviz_plugin.xml
+else()
+install(FILES ork_rviz_plugin.xml
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
+endif()
