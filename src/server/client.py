@@ -7,6 +7,7 @@ import actionlib
 import argparse
 import rospy
 import sys
+from object_recognition_msgs.msg import ObjectRecognitionAction, ObjectRecognitionGoal
 
 def on_result(status, result):
     print result

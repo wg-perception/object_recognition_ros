@@ -5,3 +5,4 @@ sink:
 pipeline:
   type: ConstantDetector
   module: object_recognition_core.ecto_cells.pipelines
+  outputs: [sink]
