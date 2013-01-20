@@ -81,3 +81,21 @@ install(FILES ork_rviz_plugin.xml
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
 endif()
+
+if (ROS_GROOVY_OR_ABOVE_FOUND)
+install(PROGRAMS apps/server.py apps/client.py
+        DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(DIRECTORY launch
+        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+else()
+install(PROGRAMS apps/server.py apps/client.py
+        DESTINATION share/${PROJECT_NAME}/bin
+)
+
+install(DIRECTORY launch
+        DESTINATION share/${PROJECT_NAME}
+)
+endif()

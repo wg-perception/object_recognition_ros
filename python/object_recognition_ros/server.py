@@ -1,18 +1,14 @@
 #!/usr/bin/env python
 """
-This file launches an ORK server according to a config file
+Define an actionlib server for ORK
 """
-from ecto.opts import scheduler_options
-from geometry_msgs.msg import PoseArray
 from object_recognition_core.pipelines.plasm import create_plasm
-from object_recognition_core.utils.training_detection_args import create_parser, read_arguments
-from object_recognition_msgs.msg import *
-from std_msgs.msg import String
+from object_recognition_msgs.msg import RecognizedObjectArray
+from object_recognition_msgs.msg._ObjectRecognitionAction import ObjectRecognitionAction
+from object_recognition_msgs.msg._ObjectRecognitionResult import ObjectRecognitionResult
 import actionlib
-import ecto
 import rospy
 import sys
-import yaml
 
 class RecognitionServer:
     """
@@ -22,9 +18,8 @@ class RecognitionServer:
     recognition_result = None
     cropper = None
 
-    def __init__(self, parse):
+    def __init__(self, ork_params):
         # create the plasm that will run the detection
-        ork_params, args = read_arguments(parser)
         self.plasm = create_plasm(ork_params)
         self.plasm.configure_all()
         print 'configured'
@@ -84,18 +79,3 @@ class RecognitionServer:
 
         # reset our instance variable for the next round
         self.recognition_result = None
-
-if __name__ == '__main__':
-    # create an ORK parser (it is special as it can read from option files)
-    parser = create_parser()
-    parser.description = ' This file executes an actionlib server that executes the ORK plasm contained in the ' \
-                        'configuration file'
-
-    # add ecto options
-    scheduler_options(parser)
-    args = parser.parse_args(args=rospy.myargv(argv=sys.argv)[1:])
-
-    print 'rospy args stripped', args
-    rospy.init_node('recognize_objects_server')
-    server = RecognitionServer(args)
-    rospy.spin()
