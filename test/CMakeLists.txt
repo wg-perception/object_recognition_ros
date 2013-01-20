@@ -11,5 +11,5 @@ object_recognition_core_sink_test(Publisher "object_recognition_ros.io.sink" "{}
 
 find_package(object_recognition_tod QUIET)
 if (object_recognition_tod_FOUND)
-  object_recognition_core_config_test(${CMAKE_CURRENT_SOURCE_DIR}/../src/server/conf/config_detection.sample)
+  object_recognition_core_config_test(${CMAKE_CURRENT_SOURCE_DIR}/config_detection_test.json)
 endif()
