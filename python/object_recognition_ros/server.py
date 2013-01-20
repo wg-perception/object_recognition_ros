@@ -45,20 +45,17 @@ class RecognitionServer:
     Main server that reads a config file, builds an actionlib server, reads an ecto plasm and run it when
     the actionlib server is queried
     """
-    recognition_result = None
-    cropper = None
-
     def __init__(self, ork_params):
         # create the plasm that will run the detection
         self.plasm = create_plasm(ork_params)
         self.plasm.configure_all()
-        print 'configured'
+        rospy.loginfo('ORK server configured')
 
         # the results or the object recognition pipeline
         self.recognition_result = None
 
         topics = ['recognized_object_array']
-        
+
         for sink in ork_params.itervalues():
             if 'recognized_object_array_topic' in sink:
                 topics.append(sink['recognized_object_array_topic'])
@@ -66,9 +63,10 @@ class RecognitionServer:
         # subscribe to the output of the detection pipeline
         for topic in topics:
             rospy.Subscriber(topic, RecognizedObjectArray, self.callback_recognized_object_array)
-            print 'Subscribed to the ' + topic + ' topic.'
+            rospy.loginfo('Subscribed to the ' + topic + ' topic.')
 
         # look for a cell that contains a cropper to select the ROI
+        self.cropper = None
         for cell in self.plasm.cells():
             if 'crop_enabled' in cell.params:
                 self.cropper = cell
@@ -76,7 +74,7 @@ class RecognitionServer:
         # actionlib stuff
         self.server = actionlib.SimpleActionServer('recognize_objects', ObjectRecognitionAction, self.execute, False)
         self.server.start()
-        print 'started'
+        rospy.loginfo('ORK server started')
 
     def callback_recognized_object_array(self, data):
         self.recognition_result = data
@@ -101,7 +99,7 @@ class RecognitionServer:
         self.plasm.execute(niter=1)
         # the pipeline should have published, wait for the results.
         while self.recognition_result is None:  # self.poses is None or self.object_ids is None:
-            print 'waiting'
+            rospy.loginfo('ORK results: waiting')
             rospy.sleep(0.1)
         result.recognized_objects = self.recognition_result
         # we have a result!
@@ -109,3 +107,4 @@ class RecognitionServer:
 
         # reset our instance variable for the next round
         self.recognition_result = None
+        rospy.loginfo('ORK results: received')
