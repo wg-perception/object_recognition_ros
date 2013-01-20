@@ -36,6 +36,7 @@ This file launches an ORK actionlib server according to a config file
 from ecto.opts import scheduler_options
 from object_recognition_core.utils.training_detection_args import create_parser, read_arguments
 from object_recognition_ros.server import RecognitionServer
+import ecto_ros
 import rospy
 import sys
 
@@ -45,10 +46,27 @@ if __name__ == '__main__':
     parser.description = ' This file executes an actionlib server that executes the ORK plasm contained in the ' \
                         'configuration file'
 
+    # add a node name option
+    def filter_node_name(node_name):
+        return node_name
+    ros_group = parser.add_argument_group('ROS parameters')
+    ros_group.add_argument('--node_name', help='The name for the node. If "", it is not run in a ROS node',
+                       default='object_recognition', type=filter_node_name)
+
+    # cleanup the arguments
+    original_argv = sys.argv
+    clean_args = sys.argv
+    ecto_ros.strip_ros_args(clean_args)
+    args = parser.parse_args(args=clean_args[1:])
+
+    if args.node_name and args.node_name != '""':
+        rospy.loginfo('ORK server started with name: %s' % args.node_name)
+        ecto_ros.init(original_argv, args.node_name, False)
+
     # add ecto options
     scheduler_options(parser)
 
-    ork_params, _args = read_arguments(parser)
+    ork_params, _args = read_arguments(args)
     rospy.init_node('recognize_objects_server')
     server = RecognitionServer(ork_params)
     rospy.spin()
