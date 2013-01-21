@@ -17,7 +17,7 @@ find_package(ROS REQUIRED ecto ecto_ros geometry_msgs object_recognition_core
 catkin_stack()
 catkin_project(object_recognition_ros)
 
-set(catkin_LIBRARIES ROS_LIBRARIES
+set(catkin_LIBRARIES ${ROS_LIBRARIES}
 #                             /opt/ros/fuerte/stacks/geometry/tf/lib/libtf.so
 )
 set(catkin_INCLUDE_DIRS ${ROS_INCLUDE_DIRS}
