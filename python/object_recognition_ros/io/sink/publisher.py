@@ -2,14 +2,17 @@
 Module defining several outputs for the object recognition pipeline
 """
 
-from object_recognition_core.boost.interface import ObjectDbParameters
-from object_recognition_ros.ecto_cells.io_ros import MsgAssembler, VisualizationMsgAssembler, Publisher_MarkerArray
-from object_recognition_core.io.sink import SinkBase
-import ecto
 from ecto import BlackBoxCellInfo, BlackBoxForward
+from object_recognition_core.boost.interface import ObjectDbParameters
+from object_recognition_core.io.sink import SinkBase
+from object_recognition_msgs.ecto_cells.ecto_object_recognition_msgs import Publisher_RecognizedObjectArray
+from object_recognition_ros.ecto_cells.io_ros import MsgAssembler, VisualizationMsgAssembler, Publisher_MarkerArray
+from object_recognition_ros.server import DEFAULT_NODE_NAME
+import ecto
+import ecto_ros
 import ecto_ros.ecto_geometry_msgs as ecto_geometry_msgs
 import ecto_ros.ecto_std_msgs as ecto_std_msgs
-from object_recognition_msgs.ecto_cells.ecto_object_recognition_msgs import Publisher_RecognizedObjectArray
+import sys
 
 PoseArrayPub = ecto_geometry_msgs.Publisher_PoseArray
 MarkerArrayPub = Publisher_MarkerArray
@@ -21,6 +24,7 @@ class Publisher(ecto.BlackBox, SinkBase):
     """Class publishing the different results of object recognition as ROS topics
     """
     def __init__(self, *args, **kwargs):
+        ecto_ros.init(sys.argv, DEFAULT_NODE_NAME, False)
         ecto.BlackBox.__init__(self, *args, **kwargs)
         SinkBase.__init__(self)
 

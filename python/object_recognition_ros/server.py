@@ -40,6 +40,8 @@ import actionlib
 import rospy
 import sys
 
+DEFAULT_NODE_NAME = "object_recognition_server"
+
 class RecognitionServer:
     """
     Main server that reads a config file, builds an actionlib server, reads an ecto plasm and run it when

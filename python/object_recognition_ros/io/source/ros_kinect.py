@@ -35,7 +35,10 @@ Module defining several outputs for the object recognition pipeline
 
 from ecto_image_pipeline.io.source import create_source
 from object_recognition_core.io.source import SourceBase
+from object_recognition_ros.server import DEFAULT_NODE_NAME
 import ecto
+import ecto_ros
+import sys
 
 ########################################################################################################################
 
@@ -44,6 +47,7 @@ class RosKinect(ecto.BlackBox, SourceBase):
     A source for any ORK pipeline that listens to Kinect topics
     """
     def __init__(self, *args, **kwargs):
+        ecto_ros.init(sys.argv, DEFAULT_NODE_NAME, False)
         ecto.BlackBox.__init__(self, *args, **kwargs)
         SourceBase.__init__(self)
 
