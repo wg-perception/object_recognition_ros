@@ -31,7 +31,7 @@ except:
 
 d['packages'] = ['object_recognition_ros', 'object_recognition_ros.io',
                 'object_recognition_ros.io', 'object_recognition_ros.io.source',
-                'object_recognition_ros.io.sink', 'object_recognition_ros.server']
+                'object_recognition_ros.io.sink']
 d['package_dir'] = {'': 'python'}
 d['install_requires'] = []
 
