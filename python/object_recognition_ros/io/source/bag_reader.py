@@ -29,16 +29,15 @@
 # LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
 # ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 # POSSIBILITY OF SUCH DAMAGE.
+
 """
 Module defining a bag reader cell to use as an input of an object recognition pipeline
 """
 
 from ecto_image_pipeline.io.source import create_source
 from object_recognition_core.io.source import SourceBase
-from object_recognition_ros.server import DEFAULT_NODE_NAME
+from object_recognition_ros import init_ros
 import ecto
-import ecto_ros
-import sys
 
 ########################################################################################################################
 
@@ -47,7 +46,7 @@ class BagReader(ecto.BlackBox, SourceBase):
     A source for any ORK pipeline that reads data from a bag
     """
     def __init__(self, *args, **kwargs):
-        ecto_ros.init(sys.argv, DEFAULT_NODE_NAME, False)
+        init_ros()
         ecto.BlackBox.__init__(self, *args, **kwargs)
         SourceBase.__init__(self)
 
