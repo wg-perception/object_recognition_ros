@@ -134,7 +134,8 @@ namespace object_recognition_core
           object.pose.header.frame_id = frame_id;
           object.pose.header.stamp = time;
 
-          cv::Mat_<float> T = pose_result.T<cv::Mat_<float> >(), R = pose_result.R<cv::Mat_<float> >();
+          cv::Vec3f T = pose_result.T<cv::Vec3f>();
+          cv::Matx33f R = pose_result.R<cv::Matx33f>();
 
           geometry_msgs::Pose & msg_pose = object.pose.pose.pose;
 
