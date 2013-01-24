@@ -17,21 +17,17 @@ find_package(ROS REQUIRED ecto ecto_ros geometry_msgs object_recognition_core
 catkin_stack()
 catkin_project(object_recognition_ros)
 
-set(catkin_LIBRARIES ${ROS_LIBRARIES}
-#                             /opt/ros/fuerte/stacks/geometry/tf/lib/libtf.so
-)
-set(catkin_INCLUDE_DIRS ${ROS_INCLUDE_DIRS}
-#                                /opt/ros/fuerte/stacks/geometry/tf/include/
-#                                /opt/ros/fuerte/stacks/bullet/include/
-#                                /opt/ros/fuerte/stacks/geometry/tf/msg_gen/cpp/include/
-#                                /opt/ros/fuerte/stacks/geometry/tf/srv_gen/cpp/include/
-#                                /opt/ros/fuerte/stacks/visualization/rviz/src/
-#                                /opt/ros/fuerte/stacks/pluginlib/include/
-)
-add_definitions(-DROS_FUERTE_FOUND=1)
+set(catkin_LIBRARIES ${ROS_LIBRARIES})
+set(catkin_INCLUDE_DIRS ${ROS_INCLUDE_DIRS})
 set(CATKIN_DEVEL_PREFIX ${CMAKE_BINARY_DIR})
+set(CATKIN_PACKAGE_BIN_DESTINATION share/${PROJECT_NAME}/bin)
+set(CATKIN_PACKAGE_INCLUDE_DESTINATION include/${PROJECT_NAME})
 set(CATKIN_PACKAGE_LIB_DESTINATION lib)
 set(CATKIN_PACKAGE_PYTHON_BUILD_DESTINATION gen/py/${PROJECT_NAME}/)
+set(CATKIN_PACKAGE_PYTHON_DESTINATION ${INSTALLED_PYTHONPATH}/${PROJECT_NAME}/)
+set(CATKIN_PACKAGE_SHARE_DESTINATION share/${PROJECT_NAME}/)
+
+add_definitions(-DROS_FUERTE_FOUND=1)
 endif()
 
 #install targets for all things python
@@ -72,7 +68,6 @@ install(FILES ork_rviz_plugin.xml
 )
 endif()
 
-if (ROS_GROOVY_OR_ABOVE_FOUND)
 install(PROGRAMS apps/server.py apps/client.py
         DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
 )
@@ -80,12 +75,3 @@ install(PROGRAMS apps/server.py apps/client.py
 install(DIRECTORY launch
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
 )
-else()
-install(PROGRAMS apps/server.py apps/client.py
-        DESTINATION share/${PROJECT_NAME}/bin
-)
-
-install(DIRECTORY launch
-        DESTINATION share/${PROJECT_NAME}
-)
-endif()
