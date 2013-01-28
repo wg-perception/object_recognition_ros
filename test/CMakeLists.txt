@@ -1,6 +1,6 @@
 # check that at least the help completes correctly
-object_recognition_core_help_test(${CMAKE_CURRENT_SOURCE_DIR}/../apps/server.py)
-object_recognition_core_help_test(${CMAKE_CURRENT_SOURCE_DIR}/../apps/client.py)
+object_recognition_core_help_test(${CMAKE_CURRENT_SOURCE_DIR}/../apps/server)
+object_recognition_core_help_test(${CMAKE_CURRENT_SOURCE_DIR}/../apps/client)
 
 # check the different sources
 object_recognition_core_source_test(BagReader "object_recognition_ros.io" "{'bag':'a.bag'}")
@@ -10,7 +10,7 @@ object_recognition_core_source_test(RosKinect "object_recognition_ros.io" "{}")
 object_recognition_core_sink_test(Publisher "object_recognition_ros.io.sink" "{}")
 
 # check the test config file
-object_recognition_core_config_test(${CMAKE_CURRENT_SOURCE_DIR}/config_detection_test.json)
+object_recognition_core_config_test(${CMAKE_CURRENT_SOURCE_DIR}/../conf/detection.test.ros.ork)
 
 # test the actionlib server (requires roscoreto belaunched)
 #object_recognition_core_pytest(test_server)

@@ -1,3 +1,4 @@
+# pipeline meant for testing that keeps publishing the same object id/pose
 sink:
   type: Publisher
   module: object_recognition_ros.io
