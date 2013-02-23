@@ -57,7 +57,9 @@ if(BUILD_TEST)
   add_subdirectory(test)
 endif()
 
-#catkin_doxygen(object_recognition_ros-doxygen ${CMAKE_CURRENT_SOURCE_DIR}/include)
+# add docs
+catkin_doxygen(object_recognition_ros-doxygen ${CMAKE_CURRENT_SOURCE_DIR}/include)
+ecto_sphinx(${CMAKE_CURRENT_SOURCE_DIR}/doc/source doc)
 
 # install
 if (ROS_FUERTE_FOUND)
