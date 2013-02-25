@@ -5,8 +5,8 @@ Module defining several outputs for the object recognition pipeline
 from ecto import BlackBoxCellInfo, BlackBoxForward
 from object_recognition_core.boost.interface import ObjectDbParameters
 from object_recognition_core.io.sink import SinkBase
-from object_recognition_msgs.ecto_cells.ecto_object_recognition_msgs import Publisher_RecognizedObjectArray
 from object_recognition_ros import init_ros
+from object_recognition_ros.ecto_cells.ecto_object_recognition_msgs import Publisher_RecognizedObjectArray
 from object_recognition_ros.ecto_cells.io_ros import MsgAssembler, VisualizationMsgAssembler, Publisher_MarkerArray
 import ecto
 import ecto_ros.ecto_geometry_msgs as ecto_geometry_msgs
@@ -26,11 +26,12 @@ class Publisher(ecto.BlackBox, SinkBase):
         ecto.BlackBox.__init__(self, *args, **kwargs)
         SinkBase.__init__(self)
 
-    @classmethod
-    def declare_cells(cls, _p):
+    @staticmethod
+    def declare_cells(_p):
         return {'msg_assembler': BlackBoxCellInfo(MsgAssembler)}
 
-    def declare_direct_params(self, p):
+    @staticmethod
+    def declare_direct_params(p):
         p.declare('do_visualize', 'If True some markers are displayed for visualization.', True)
         p.declare('markers_topic', 'The ROS topic to use for the marker array.', 'markers')
         p.declare('pose_topic', 'The ROS topic to use for the pose array.', 'poses')
@@ -39,7 +40,8 @@ class Publisher(ecto.BlackBox, SinkBase):
         p.declare('latched', 'Determines if the topics will be latched.', True)
         p.declare('db_params', 'The DB parameters', ObjectDbParameters({}))
 
-    def declare_forwards(self, _p):
+    @staticmethod
+    def declare_forwards(_p):
         p = {'msg_assembler': [BlackBoxForward('publish_clusters')]}
         i = {'msg_assembler': 'all'}
 

@@ -49,10 +49,12 @@ class RosKinect(ecto.BlackBox, SourceBase):
         ecto.BlackBox.__init__(self, *args, **kwargs)
         SourceBase.__init__(self)
 
-    def declare_cells(self, p):
+    @staticmethod
+    def declare_cells(p):
         return {'main': create_source(*('image_pipeline', 'OpenNISubscriber'), **p)}
 
-    def declare_forwards(self, _p):
+    @staticmethod
+    def declare_forwards(_p):
         return ({'main': 'all'}, {'main': 'all'}, {'main': 'all'})
 
     def connections(self, _p):
