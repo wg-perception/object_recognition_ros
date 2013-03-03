@@ -27,10 +27,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef IMU_DISPLAY_H
-#define IMU_DISPLAY_H
+#ifndef ORK_DISPLAY_H
+#define ORK_DISPLAY_H
 
-#include <sensor_msgs/Imu.h>
+#include <object_recognition_msgs/RecognizedObjectArray.h>
 #if ROS_FUERTE_FOUND
 #include <rviz/display.h>
 #else
@@ -73,7 +73,7 @@ namespace object_recognition_ros
 // themselves are represented by a separate class, OrkObjectVisual.  The
 // idiom for the visuals is that when the objects exist, they appear
 // in the scene, and when they are deleted, they disappear.
-  class OrkObjectDisplay: public rviz::MessageFilterDisplay<sensor_msgs::Imu>
+  class OrkObjectDisplay: public rviz::MessageFilterDisplay<object_recognition_msgs::RecognizedObjectArray>
   {
     Q_OBJECT
   public:
@@ -105,7 +105,7 @@ namespace object_recognition_ros
     // Function to handle an incoming ROS message.
   private:
     void
-    processMessage(const sensor_msgs::Imu::ConstPtr& msg);
+    processMessage(const object_recognition_msgs::RecognizedObjectArrayConstPtr& msg);
 
     // Storage for the list of visuals.  This display supports an
     // adjustable history length, so we need one visual per history
@@ -121,5 +121,4 @@ namespace object_recognition_ros
 
 }// end namespace rviz_plugin_tutorials
 
-#endif // IMU_DISPLAY_H
-// %EndTag(FULL_SOURCE)%
+#endif // ORK_DISPLAY_H

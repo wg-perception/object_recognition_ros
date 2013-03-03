@@ -27,10 +27,10 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef IMU_VISUAL_H
-#define IMU_VISUAL_H
+#ifndef ORK_VISUAL_H
+#define ORK_VISUAL_H
 
-#include <sensor_msgs/Imu.h>
+#include <object_recognition_msgs/RecognizedObjectArray.h>
 
 namespace Ogre
 {
@@ -40,6 +40,8 @@ namespace Ogre
 
 namespace rviz
 {
+  class MovableText;
+  class Axes;
   class Arrow;
 }
 
@@ -66,7 +68,7 @@ namespace object_recognition_ros
 
     // Configure the visual to show the data in the message.
     void
-    setMessage(const sensor_msgs::Imu::ConstPtr& msg);
+    setMessage(const object_recognition_msgs::RecognizedObject& msg);
 
     // Set the pose of the coordinate frame the message refers to.
     // These could be done inside setMessage(), but that would require
@@ -84,11 +86,14 @@ namespace object_recognition_ros
     setColor(float r, float g, float b, float a);
 
   private:
-    // The object implementing the actual arrow shape
-    boost::shared_ptr<rviz::Arrow> acceleration_arrow_;
+    /** The name of the object */
+    boost::shared_ptr<rviz::MovableText> name_;
+
+    /** The pose of the object */
+    boost::shared_ptr<rviz::Axes> axes_;
 
     // A SceneNode whose pose is set to match the coordinate frame of
-    // the Imu message header.
+    // the Object message header.
     Ogre::SceneNode* frame_node_;
 
     // The SceneManager, kept here only so the destructor can ask it to
@@ -99,4 +104,4 @@ namespace object_recognition_ros
 
 }// end namespace rviz_plugin_tutorials
 
-#endif // IMU_VISUAL_H
+#endif // ORK_VISUAL_H

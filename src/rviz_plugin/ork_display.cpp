@@ -27,6 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <boost/foreach.hpp>
+
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreSceneManager.h>
 
@@ -137,10 +139,10 @@ namespace object_recognition_ros
 
 // This is our callback to handle an incoming message.
   void
-  OrkObjectDisplay::processMessage(const sensor_msgs::Imu::ConstPtr& msg)
+  OrkObjectDisplay::processMessage(const object_recognition_msgs::RecognizedObjectArrayConstPtr& msg)
   {
     // Here we call the rviz::FrameManager to get the transform from the
-    // fixed frame to the frame in the header of this Imu message.  If
+    // fixed frame to the frame in the header of this message. If
     // it fails, we can't do anything else so we return.
     Ogre::Quaternion orientation;
     Ogre::Vector3 position;
@@ -151,31 +153,25 @@ namespace object_recognition_ros
       return;
     }
 
-    int history_length = history_length_property_->getInt();
+    visuals_.clear();
+    BOOST_FOREACH(const object_recognition_msgs::RecognizedObject& object, msg->objects) {
+      boost::shared_ptr<OrkObjectVisual> visual = boost::shared_ptr<OrkObjectVisual>(new OrkObjectVisual(context_->getSceneManager(), scene_node_));
+      visuals_.push_back(visual);
 
-    // We are keeping a circular buffer of visual pointers.  This gets
-    // the next one, or creates and stores it if it was missing.
-    boost::shared_ptr<OrkObjectVisual> visual = visuals_[messages_received_ % history_length];
-    if (!visual)
-    {
-      visual = boost::shared_ptr<OrkObjectVisual>(new OrkObjectVisual(context_->getSceneManager(), scene_node_));
-      visuals_[messages_received_ % history_length] = visual;
+      // Now set or update the contents of the chosen visual.
+      visual->setMessage(object);
+      visual->setFramePosition(position);
+      visual->setFrameOrientation(orientation);
+
+      float alpha = alpha_property_->getFloat();
+      Ogre::ColourValue color = color_property_->getOgreColor();
+      visual->setColor(color.r, color.g, color.b, alpha);
     }
-
-    // Now set or update the contents of the chosen visual.
-    visual->setMessage(msg);
-    visual->setFramePosition(position);
-    visual->setFrameOrientation(orientation);
-
-    float alpha = alpha_property_->getFloat();
-    Ogre::ColourValue color = color_property_->getOgreColor();
-    visual->setColor(color.r, color.g, color.b, alpha);
   }
-
 } // end namespace object_recognition_ros
 
 // Tell pluginlib about this class.  It is important to do this in
 // global scope, outside our package's namespace.
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_DECLARE_CLASS( object_recognition_ros, OrkObjectDisplay, object_recognition_ros::OrkObjectDisplay, rviz::Display)
+PLUGINLIB_EXPORT_CLASS( object_recognition_ros::OrkObjectDisplay, rviz::Display)
 // END_TUTORIAL

@@ -32,6 +32,8 @@
 #include <OGRE/OgreSceneManager.h>
 
 #include <rviz/ogre_helpers/arrow.h>
+#include <rviz/ogre_helpers/axes.h>
+#include <rviz/ogre_helpers/movable_text.h>
 
 #include "ork_visual.h"
 
@@ -52,9 +54,11 @@ namespace object_recognition_ros
     // relative to the RViz fixed frame.
     frame_node_ = parent_node->createChildSceneNode();
 
-    // We create the arrow object within the frame node so that we can
-    // set its position and direction relative to its header frame.
-    acceleration_arrow_.reset(new rviz::Arrow(scene_manager_, frame_node_));
+    name_.reset(new rviz::MovableText("EMPTY"));
+    name_->setTextAlignment(rviz::MovableText::H_CENTER, rviz::MovableText::V_CENTER);
+    name_->setCharacterHeight(0.08);
+    name_->showOnTop();
+    name_->setVisible(false);
   }
 
   OrkObjectVisual::~OrkObjectVisual()
@@ -64,23 +68,25 @@ namespace object_recognition_ros
   }
 
   void
-  OrkObjectVisual::setMessage(const sensor_msgs::Imu::ConstPtr& msg)
+  OrkObjectVisual::setMessage(const object_recognition_msgs::RecognizedObject& object)
   {
-    const geometry_msgs::Vector3& a = msg->linear_acceleration;
+    // Set the pose of the object
+  axes_->setOrientation(
+      Ogre::Quaternion(object.pose.pose.pose.orientation.w,
+                       object.pose.pose.pose.orientation.x,
+                       object.pose.pose.pose.orientation.y,
+                       object.pose.pose.pose.orientation.z));
+  axes_->setPosition(
+      Ogre::Vector3(object.pose.pose.pose.position.x,
+                    object.pose.pose.pose.position.y,
+                    object.pose.pose.pose.position.z));
 
-    // Convert the geometry_msgs::Vector3 to an Ogre::Vector3.
-    Ogre::Vector3 acc(a.x, a.y, a.z);
-
-    // Find the magnitude of the acceleration vector.
-    float length = acc.length();
-
-    // Scale the arrow's thickness in each dimension along with its length.
-    Ogre::Vector3 scale(length, length, length);
-    acceleration_arrow_->setScale(scale);
-
-    // Set the orientation of the arrow to match the direction of the
-    // acceleration vector.
-    acceleration_arrow_->setDirection(acc);
+  // Set the name of the object
+  name_->setCaption(object.type.type);
+  //name_>setColor(color);
+  name_->setGlobalTranslation(Ogre::Vector3(object.pose.pose.pose.position.x,
+                                            object.pose.pose.pose.position.y,
+                                            object.pose.pose.pose.position.z));
   }
 
 // Position and orientation are passed through to the SceneNode.
@@ -96,11 +102,11 @@ namespace object_recognition_ros
     frame_node_->setOrientation(orientation);
   }
 
-// Color is passed through to the Arrow object.
+  // Color is passed through to the Arrow object.
   void
   OrkObjectVisual::setColor(float r, float g, float b, float a)
   {
-    acceleration_arrow_->setColor(r, g, b, a);
+    //acceleration_arrow_->setColor(r, g, b, a);
   }
 // END_TUTORIAL
 
