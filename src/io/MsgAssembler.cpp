@@ -124,8 +124,8 @@ namespace object_recognition_core
           object_recognition_msgs::RecognizedObject & object = msg->objects[object_id];
 
           // Deal with the id
-          object.id.id = pose_result.object_id();
-          object.id.db = or_json::write(or_json::mValue(pose_result.db()->parameters().raw()));
+          object.type.key = pose_result.object_id();
+          object.type.db = or_json::write(or_json::mValue(pose_result.db()->parameters().raw()));
 
           // Deal with the confidence
           object.confidence = pose_result.confidence();

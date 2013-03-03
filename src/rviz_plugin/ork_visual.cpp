@@ -82,7 +82,7 @@ namespace object_recognition_ros
                     object.pose.pose.pose.position.z));
 
   // Set the name of the object
-  name_->setCaption(object.type.type);
+  name_->setCaption(object.type.key);
   //name_>setColor(color);
   name_->setGlobalTranslation(Ogre::Vector3(object.pose.pose.pose.position.x,
                                             object.pose.pose.pose.position.y,

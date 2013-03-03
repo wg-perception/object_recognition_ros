@@ -170,7 +170,7 @@ namespace object_recognition_core
         // Deal with the color index
         size_t object_index;
         {
-          std::string hash = recognized_object.id.db + recognized_object.id.id;
+          std::string hash = recognized_object.type.db + recognized_object.type.key;
           if (object_id_to_index_.find(hash) == object_id_to_index_.end())
           object_id_to_index_[hash] = object_id_to_index_.size();
           object_index = object_id_to_index_[hash];
@@ -182,13 +182,13 @@ namespace object_recognition_core
         pose_array_msg.header = recognized_object.pose.header;
 
         or_json::mValue db_params;
-        or_json::read(recognized_object.id.db, db_params);
+        or_json::read(recognized_object.type.db, db_params);
 
         object_recognition_core::db::ObjectDbPtr db = object_recognition_core::db::ObjectDbParameters(db_params.get_obj()).generateDb();
         or_json::mObject attributes;
         try
         {
-          object_recognition_core::prototypes::ObjectInfo object_info(recognized_object.id.id, db);
+          object_recognition_core::prototypes::ObjectInfo object_info(recognized_object.type.key, db);
           attributes = object_info.attributes();
         }
         catch (...)
@@ -239,7 +239,7 @@ namespace object_recognition_core
           }
           else
           {
-        	marker.text = recognized_object.id.id;
+          marker.text = recognized_object.type.key;
           }
           marker.color.a = 1;
           marker.color.g = 1;
@@ -253,7 +253,7 @@ namespace object_recognition_core
         ++marker_id;
 
         // Deal with the object_id
-        object_ids_array.push_back(or_json::mValue(recognized_object.id.id));
+        object_ids_array.push_back(or_json::mValue(recognized_object.type.key));
       }
     }
 
