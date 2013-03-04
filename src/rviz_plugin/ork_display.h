@@ -30,6 +30,8 @@
 #ifndef ORK_DISPLAY_H
 #define ORK_DISPLAY_H
 
+#include <boost/foreach.hpp>
+
 #include <object_recognition_msgs/RecognizedObjectArray.h>
 #if ROS_FUERTE_FOUND
 #include <rviz/display.h>
@@ -49,14 +51,11 @@ namespace rviz
   class IntProperty;
 }
 
-// All the source in this plugin is in its own namespace.  This is not
-// required but is good practice.
 namespace object_recognition_ros
 {
 
   class OrkObjectVisual;
 
-// BEGIN_TUTORIAL
 // Here we declare our new subclass of rviz::Display.  Every display
 // which can be listed in the "Displays" panel is a subclass of
 // rviz::Display.
@@ -67,12 +66,6 @@ namespace object_recognition_ros
 // direction of the arrow will be relative to the orientation of that
 // frame.  It will also optionally show a history of recent
 // acceleration vectors, which will be stored in a circular buffer.
-//
-// The OrkObjectDisplay class itself just implements the circular buffer,
-// editable parameters, and Display subclass machinery.  The visuals
-// themselves are represented by a separate class, OrkObjectVisual.  The
-// idiom for the visuals is that when the objects exist, they appear
-// in the scene, and when they are deleted, they disappear.
   class OrkObjectDisplay: public rviz::MessageFilterDisplay<object_recognition_msgs::RecognizedObjectArray>
   {
     Q_OBJECT
@@ -96,28 +89,14 @@ namespace object_recognition_ros
     virtual void
     reset();
 
-    // These Qt slots get connected to signals indicating changes in the user-editable properties.
-  private Q_SLOTS:
-    void updateColorAndAlpha();
-    void
-    updateHistoryLength();
-
     // Function to handle an incoming ROS message.
   private:
     void
     processMessage(const object_recognition_msgs::RecognizedObjectArrayConstPtr& msg);
 
-    // Storage for the list of visuals.  This display supports an
-    // adjustable history length, so we need one visual per history
-    // item.
+    // Storage for the list of visuals.
     std::vector<boost::shared_ptr<OrkObjectVisual> > visuals_;
-
-    // User-editable property variables.
-    rviz::ColorProperty* color_property_;
-    rviz::FloatProperty* alpha_property_;
-    rviz::IntProperty* history_length_property_;
   };
-// END_TUTORIAL
 
 }// end namespace rviz_plugin_tutorials
 

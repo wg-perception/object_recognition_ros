@@ -27,10 +27,14 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <OGRE/OgreVector3.h>
+#include <OGRE/OgreEntity.h>
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreVector3.h>
 
+#include <rviz/display_context.h>
+#include <rviz/display_factory.h>
+#include <rviz/default_plugin/marker_display.h>
 #include <rviz/ogre_helpers/arrow.h>
 #include <rviz/ogre_helpers/axes.h>
 #include <rviz/ogre_helpers/movable_text.h>
@@ -41,7 +45,9 @@ namespace object_recognition_ros
 {
 
 // BEGIN_TUTORIAL
-  OrkObjectVisual::OrkObjectVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node)
+  OrkObjectVisual::OrkObjectVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node,
+                                   rviz::DisplayContext* display_context) : display_context_(display_context),
+                                       mesh_entity_(0)
   {
     scene_manager_ = scene_manager;
 
@@ -54,40 +60,78 @@ namespace object_recognition_ros
     // relative to the RViz fixed frame.
     frame_node_ = parent_node->createChildSceneNode();
 
-    name_.reset(new rviz::MovableText("EMPTY"));
-    name_->setTextAlignment(rviz::MovableText::H_CENTER, rviz::MovableText::V_CENTER);
-    name_->setCharacterHeight(0.08);
-    name_->showOnTop();
-    name_->setVisible(false);
-  }
+  // Initialize the axes
+  axes_.reset(new rviz::Axes(scene_manager_, frame_node_));
+
+  // Initialize the name
+  name_.reset(new rviz::MovableText("EMPTY"));
+  name_->setTextAlignment(rviz::MovableText::H_CENTER,
+                          rviz::MovableText::V_CENTER);
+  name_->setCharacterHeight(0.08);
+  name_->showOnTop();
+  name_->setColor(Ogre::ColourValue::White);
+  name_->setVisible(false);
+  frame_node_->attachObject(name_.get());
+}
 
   OrkObjectVisual::~OrkObjectVisual()
   {
     // Destroy the frame node since we don't need it anymore.
+    if (mesh_entity_) {
+      display_context_->getSceneManager()->destroyEntity(mesh_entity_);
+      mesh_entity_ = 0;
+    }
     scene_manager_->destroySceneNode(frame_node_);
   }
 
   void
-  OrkObjectVisual::setMessage(const object_recognition_msgs::RecognizedObject& object)
+  OrkObjectVisual::setMessage(const object_recognition_msgs::RecognizedObject& object, const std::string& mesh_resource)
   {
+    Ogre::Vector3 position(object.pose.pose.pose.position.x,
+                        object.pose.pose.pose.position.y,
+                        object.pose.pose.pose.position.z);
     // Set the pose of the object
   axes_->setOrientation(
       Ogre::Quaternion(object.pose.pose.pose.orientation.w,
                        object.pose.pose.pose.orientation.x,
                        object.pose.pose.pose.orientation.y,
                        object.pose.pose.pose.orientation.z));
-  axes_->setPosition(
-      Ogre::Vector3(object.pose.pose.pose.position.x,
-                    object.pose.pose.pose.position.y,
-                    object.pose.pose.pose.position.z));
+  axes_->setPosition(position);
 
   // Set the name of the object
   name_->setCaption(object.type.key);
   //name_>setColor(color);
-  name_->setGlobalTranslation(Ogre::Vector3(object.pose.pose.pose.position.x,
-                                            object.pose.pose.pose.position.y,
-                                            object.pose.pose.pose.position.z));
+  name_->setVisible(true);
+  name_->setGlobalTranslation(position);
+//  name_->setLocalTranslation(
+//      Ogre::Vector3(object.pose.pose.pose.position.x,
+//                    object.pose.pose.pose.position.y,
+//                    object.pose.pose.pose.position.z));
+
+  if (!mesh_resource.empty()) {
+    static uint32_t count = 0;
+    std::stringstream ss;
+    ss << "ork_mesh_resource_marker_" << count++;
+    std::string id = ss.str();
+
+    mesh_entity_ = display_context_->getSceneManager()->createEntity(
+        id, mesh_resource);
+    frame_node_->attachObject(mesh_entity_);
+
+    frame_node_->setVisible(true);
+    frame_node_->setOrientation(
+        Ogre::Quaternion(object.pose.pose.pose.orientation.w,
+                         object.pose.pose.pose.orientation.x,
+                         object.pose.pose.pose.orientation.y,
+                         object.pose.pose.pose.orientation.z));
+    frame_node_->setPosition(position);
+    // In Ogre, mesh surface normals are not normalized if object is not
+    // scaled.  This forces the surface normals to be renormalized by
+    // invisibly tweaking the scale.
+    Ogre::Vector3 scale(1, 1, 1.0001);
+    frame_node_->setScale(scale);
   }
+}
 
 // Position and orientation are passed through to the SceneNode.
   void
@@ -101,14 +145,4 @@ namespace object_recognition_ros
   {
     frame_node_->setOrientation(orientation);
   }
-
-  // Color is passed through to the Arrow object.
-  void
-  OrkObjectVisual::setColor(float r, float g, float b, float a)
-  {
-    //acceleration_arrow_->setColor(r, g, b, a);
-  }
-// END_TUTORIAL
-
-}// end namespace object_recognition_ros
-
+}    // end namespace object_recognition_ros

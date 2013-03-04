@@ -27,6 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <string>
+
 #include <boost/foreach.hpp>
 
 #include <OGRE/OgreSceneNode.h>
@@ -34,11 +36,15 @@
 
 #include <tf/transform_listener.h>
 
-#include <rviz/visualization_manager.h>
+#include <rviz/frame_manager.h>
+#include <rviz/mesh_loader.h>
 #include <rviz/properties/color_property.h>
 #include <rviz/properties/float_property.h>
 #include <rviz/properties/int_property.h>
-#include <rviz/frame_manager.h>
+#include <rviz/visualization_manager.h>
+
+#include <object_recognition_core/db/db.h>
+#include <object_recognition_core/db/prototypes/object_info.h>
 
 #include "ork_visual.h"
 
@@ -52,16 +58,6 @@ namespace object_recognition_ros
 // constructor the parameters it needs to fully initialize.
   OrkObjectDisplay::OrkObjectDisplay()
   {
-    color_property_ = new rviz::ColorProperty("Color", QColor(204, 51, 204), "Color to draw the acceleration arrows.",
-                                              this, SLOT(updateColorAndAlpha()));
-
-    alpha_property_ = new rviz::FloatProperty("Alpha", 1.0, "0 is fully transparent, 1.0 is fully opaque.", this,
-                                              SLOT(updateColorAndAlpha()));
-
-    history_length_property_ = new rviz::IntProperty("History Length", 1, "Number of prior measurements to display.",
-                                                     this, SLOT(updateHistoryLength()));
-    history_length_property_->setMin(1);
-    history_length_property_->setMax(100000);
   }
 
 // After the top-level rviz::Display::initialize() does its own setup,
@@ -78,7 +74,6 @@ namespace object_recognition_ros
   OrkObjectDisplay::onInitialize()
   {
     MFDClass::onInitialize();
-    updateHistoryLength();
   }
 
   OrkObjectDisplay::~OrkObjectDisplay()
@@ -91,50 +86,6 @@ namespace object_recognition_ros
   {
     MFDClass::reset();
     visuals_.clear();
-    visuals_.resize(history_length_property_->getInt());
-  }
-
-// Set the current color and alpha values for each visual.
-  void
-  OrkObjectDisplay::updateColorAndAlpha()
-  {
-    float alpha = alpha_property_->getFloat();
-    Ogre::ColourValue color = color_property_->getOgreColor();
-
-    for (size_t i = 0; i < visuals_.size(); i++)
-    {
-      if (visuals_[i])
-      {
-        visuals_[i]->setColor(color.r, color.g, color.b, alpha);
-      }
-    }
-  }
-
-// Set the number of past visuals to show.
-  void
-  OrkObjectDisplay::updateHistoryLength()
-  {
-    int new_length = history_length_property_->getInt();
-
-    // Create a new array of visual pointers, all NULL.
-    std::vector<boost::shared_ptr<OrkObjectVisual> > new_visuals(new_length);
-
-    // Copy the contents from the old array to the new.
-    // (Number to copy is the minimum of the 2 vector lengths).
-    size_t copy_len = (new_visuals.size() > visuals_.size()) ? visuals_.size() : new_visuals.size();
-    for (size_t i = 0; i < copy_len; i++)
-    {
-      int new_index = (messages_received_ - i) % new_visuals.size();
-      int old_index = (messages_received_ - i) % visuals_.size();
-      new_visuals[new_index] = visuals_[old_index];
-    }
-
-    // We don't need to create any new visuals here, they are created as
-    // needed when messages are received.
-
-    // Put the new vector into the member variable version and let the
-    // old one go out of scope.
-    visuals_.swap(new_visuals);
   }
 
 // This is our callback to handle an incoming message.
@@ -153,25 +104,47 @@ namespace object_recognition_ros
       return;
     }
 
-    visuals_.clear();
-    BOOST_FOREACH(const object_recognition_msgs::RecognizedObject& object, msg->objects) {
-      boost::shared_ptr<OrkObjectVisual> visual = boost::shared_ptr<OrkObjectVisual>(new OrkObjectVisual(context_->getSceneManager(), scene_node_));
-      visuals_.push_back(visual);
+  visuals_.clear();
+  BOOST_FOREACH(const object_recognition_msgs::RecognizedObject& object, msg->objects){
+    boost::shared_ptr<OrkObjectVisual> visual = boost::shared_ptr<OrkObjectVisual>(new OrkObjectVisual(
+            context_->getSceneManager(), scene_node_, context_));
+    visuals_.push_back(visual);
 
-      // Now set or update the contents of the chosen visual.
-      visual->setMessage(object);
-      visual->setFramePosition(position);
-      visual->setFrameOrientation(orientation);
-
-      float alpha = alpha_property_->getFloat();
-      Ogre::ColourValue color = color_property_->getOgreColor();
-      visual->setColor(color.r, color.g, color.b, alpha);
+    // Get the mesh URL and save it to a temporary file
+    object_recognition_core::db::ObjectDbPtr db = object_recognition_core::db::ObjectDbParameters(object.type.db).generateDb();
+    or_json::mObject attributes;
+    try
+    {
+      object_recognition_core::prototypes::ObjectInfo object_info(object.type.key, db);
+      attributes = object_info.attributes();
     }
+    catch (...)
+    {
+      ROS_ERROR("Cannot retrieved load mesh Object db not initialized");
+    }
+
+    // Now set or update the contents of the chosen visual.
+    std::string mesh_resource;
+    if (attributes.find("mesh_uri") != attributes.end()) {
+      mesh_resource = attributes.find("mesh_uri")->second.get_str();
+      // std::string mesh_resource= "http://localhost:5984/object_recognition/0577f0d5ff1a6ec9ec4af56851012e78/mesh.stl";
+      if (rviz::loadMeshFromResource(mesh_resource).isNull())
+      {
+        std::stringstream ss;
+        ss << "Could not load [" << mesh_resource << "]";
+        ROS_DEBUG("%s", ss.str().c_str());
+        return;
+      }
+    }
+    visual->setMessage(object, mesh_resource);
+
+    visual->setFramePosition(position);
+    visual->setFrameOrientation(orientation);
   }
-} // end namespace object_recognition_ros
+}
+}  // end namespace object_recognition_ros
 
 // Tell pluginlib about this class.  It is important to do this in
 // global scope, outside our package's namespace.
 #include <pluginlib/class_list_macros.h>
-PLUGINLIB_EXPORT_CLASS( object_recognition_ros::OrkObjectDisplay, rviz::Display)
-// END_TUTORIAL
+PLUGINLIB_EXPORT_CLASS(object_recognition_ros::OrkObjectDisplay, rviz::Display)

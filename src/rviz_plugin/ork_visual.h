@@ -30,25 +30,26 @@
 #ifndef ORK_VISUAL_H
 #define ORK_VISUAL_H
 
-#include <object_recognition_msgs/RecognizedObjectArray.h>
+#include <string>
 
-namespace Ogre
-{
-  class Vector3;
-  class Quaternion;
+#include <object_recognition_msgs/RecognizedObject.h>
+
+namespace Ogre {
+class Entity;
+class Quaternion;
+class Vector3;
 }
 
-namespace rviz
-{
-  class MovableText;
-  class Axes;
-  class Arrow;
+namespace rviz {
+class Axes;
+class Arrow;
+class DisplayContext;
+class MeshResourceMarker;
+class MovableText;
 }
 
 namespace object_recognition_ros
 {
-
-// BEGIN_TUTORIAL
 // Declare the visual class for this display.
 //
 // Each instance of ImuVisual represents the visualization of a single
@@ -58,17 +59,22 @@ namespace object_recognition_ros
   class OrkObjectVisual
   {
   public:
-    // Constructor.  Creates the visual stuff and puts it into the
-    // scene, but in an unconfigured state.
-    OrkObjectVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node);
+    /** Constructor.  Creates the visual stuff and puts it into the
+     * scene, but in an unconfigured state.
+     *
+     * @param display The display that calls those visuals
+     */
+    OrkObjectVisual(Ogre::SceneManager* scene_manager, Ogre::SceneNode* parent_node, rviz::DisplayContext* display);
 
     // Destructor.  Removes the visual stuff from the scene.
     virtual
     ~OrkObjectVisual();
 
-    // Configure the visual to show the data in the message.
+    /** Configure the visual to show the data in the message.
+     * @param mesh_file The file in which the mesh is stored
+     */
     void
-    setMessage(const object_recognition_msgs::RecognizedObject& msg);
+    setMessage(const object_recognition_msgs::RecognizedObject& msg, const std::string& mesh_file);
 
     // Set the pose of the coordinate frame the message refers to.
     // These could be done inside setMessage(), but that would require
@@ -80,17 +86,23 @@ namespace object_recognition_ros
     void
     setFrameOrientation(const Ogre::Quaternion& orientation);
 
-    // Set the color and alpha of the visual, which are user-editable
-    // parameters and therefore don't come from the Imu message.
+    /**
+     * Set the mesh of the visual by using a file and setting it to the mesh resource
+     * @param mesh_file The file in which the mesh is stored
+     */
     void
-    setColor(float r, float g, float b, float a);
-
+    setMesh(const std::string& mesh_file);
   private:
+    rviz::DisplayContext* display_context_;
+
     /** The name of the object */
     boost::shared_ptr<rviz::MovableText> name_;
 
     /** The pose of the object */
     boost::shared_ptr<rviz::Axes> axes_;
+
+    /** The mesh of the object */
+    Ogre::Entity *mesh_entity_;
 
     // A SceneNode whose pose is set to match the coordinate frame of
     // the Object message header.
@@ -100,7 +112,6 @@ namespace object_recognition_ros
     // destroy the ``frame_node_``.
     Ogre::SceneManager* scene_manager_;
   };
-// END_TUTORIAL
 
 }// end namespace rviz_plugin_tutorials
 
