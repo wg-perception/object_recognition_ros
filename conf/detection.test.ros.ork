@@ -1,4 +1,9 @@
 # pipeline meant for testing that keeps publishing the same object id/pose
+source:
+  type: ConstantSource
+  module: object_recognition_core.ecto_cells.pipelines
+  outputs: [sink]
+
 sink:
   type: Publisher
   module: object_recognition_ros.io

@@ -84,7 +84,10 @@ namespace object_recognition_core
     static void
     declare_io(const ecto::tendrils& params, ecto::tendrils& inputs, ecto::tendrils& outputs)
     {
-      inputs.declare < sensor_msgs::ImageConstPtr > ("image_message", "the image message to get the header");
+    inputs.declare<sensor_msgs::ImageConstPtr>(
+        "image_message", "The image message to get the header");
+    inputs.declare(&MsgAssembler::frame_id_, "frame_id",
+                   "The frame_id where the objects are seen. It can be obtained from image_message too.");
       inputs.declare(&MsgAssembler::pose_results_, "pose_results", "The results of object recognition");
 
       outputs.declare < object_recognition_msgs::RecognizedObjectArrayConstPtr > ("msg", "The poses");
@@ -111,7 +114,8 @@ namespace object_recognition_core
       {
         frame_id = (*image_message_)->header.frame_id;
         time = (*image_message_)->header.stamp;
-      }
+      } else if (!frame_id_->empty())
+        frame_id = *frame_id_;
 
       msg->header.frame_id = frame_id;
       msg->header.stamp = time;
@@ -177,6 +181,7 @@ namespace object_recognition_core
       return ecto::OK;
     }
   private:
+    ecto::spore<std_msgs::Header::_frame_id_type> frame_id_;
     ecto::spore<std::vector<common::PoseResult> > pose_results_;
     ecto::spore<sensor_msgs::ImageConstPtr> image_message_;
     ecto::spore<bool> publish_clusters_;
