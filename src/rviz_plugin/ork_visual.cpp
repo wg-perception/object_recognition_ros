@@ -59,9 +59,10 @@ namespace object_recognition_ros
     // Here we create a node to store the pose of the Imu's header frame
     // relative to the RViz fixed frame.
     frame_node_ = parent_node->createChildSceneNode();
+    object_node_ = frame_node_->createChildSceneNode();
 
   // Initialize the axes
-  axes_.reset(new rviz::Axes(scene_manager_, frame_node_));
+  axes_.reset(new rviz::Axes(scene_manager_, object_node_));
 
   // Initialize the name
   name_.reset(new rviz::MovableText("EMPTY"));
@@ -71,7 +72,8 @@ namespace object_recognition_ros
   name_->showOnTop();
   name_->setColor(Ogre::ColourValue::White);
   name_->setVisible(false);
-  frame_node_->attachObject(name_.get());
+
+  object_node_->attachObject(name_.get());
 }
 
   OrkObjectVisual::~OrkObjectVisual()
@@ -90,19 +92,22 @@ namespace object_recognition_ros
     Ogre::Vector3 position(object.pose.pose.pose.position.x,
                         object.pose.pose.pose.position.y,
                         object.pose.pose.pose.position.z);
-    // Set the pose of the object
-  axes_->setOrientation(
-      Ogre::Quaternion(object.pose.pose.pose.orientation.w,
-                       object.pose.pose.pose.orientation.x,
-                       object.pose.pose.pose.orientation.y,
-                       object.pose.pose.pose.orientation.z));
-  axes_->setPosition(position);
+    std::cout << object.pose.pose.pose.position.x << " " <<
+        object.pose.pose.pose.position.y  << " " <<
+        object.pose.pose.pose.position.z << std::endl;
+
+    object_node_->setOrientation(
+        Ogre::Quaternion(object.pose.pose.pose.orientation.w,
+                         object.pose.pose.pose.orientation.x,
+                         object.pose.pose.pose.orientation.y,
+                         object.pose.pose.pose.orientation.z));
+    object_node_->setPosition(position);
 
   // Set the name of the object
   name_->setCaption(object.type.key);
   //name_>setColor(color);
-  name_->setVisible(true);
-  name_->setGlobalTranslation(position);
+  //name_->setVisible(true);
+  //name_->setGlobalTranslation(position);
 //  name_->setLocalTranslation(
 //      Ogre::Vector3(object.pose.pose.pose.position.x,
 //                    object.pose.pose.pose.position.y,
@@ -116,15 +121,8 @@ namespace object_recognition_ros
 
     mesh_entity_ = display_context_->getSceneManager()->createEntity(
         id, mesh_resource);
-    frame_node_->attachObject(mesh_entity_);
+    object_node_->attachObject(mesh_entity_);
 
-    frame_node_->setVisible(true);
-    frame_node_->setOrientation(
-        Ogre::Quaternion(object.pose.pose.pose.orientation.w,
-                         object.pose.pose.pose.orientation.x,
-                         object.pose.pose.pose.orientation.y,
-                         object.pose.pose.pose.orientation.z));
-    frame_node_->setPosition(position);
     // In Ogre, mesh surface normals are not normalized if object is not
     // scaled.  This forces the surface normals to be renormalized by
     // invisibly tweaking the scale.

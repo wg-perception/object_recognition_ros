@@ -95,14 +95,6 @@ namespace object_recognition_ros
     // Here we call the rviz::FrameManager to get the transform from the
     // fixed frame to the frame in the header of this message. If
     // it fails, we can't do anything else so we return.
-    Ogre::Quaternion orientation;
-    Ogre::Vector3 position;
-    if (!context_->getFrameManager()->getTransform(msg->header.frame_id, msg->header.stamp, position, orientation))
-    {
-      ROS_DEBUG(
-          "Error transforming from frame '%s' to frame '%s'", msg->header.frame_id.c_str(), qPrintable( fixed_frame_ ));
-      return;
-    }
 
   visuals_.clear();
   BOOST_FOREACH(const object_recognition_msgs::RecognizedObject& object, msg->objects){
@@ -124,10 +116,11 @@ namespace object_recognition_ros
     }
 
     // Now set or update the contents of the chosen visual.
+    //std::string mesh_resource;
     std::string mesh_resource;
-    if (attributes.find("mesh_uri") != attributes.end()) {
-      mesh_resource = attributes.find("mesh_uri")->second.get_str();
-      // std::string mesh_resource= "http://localhost:5984/object_recognition/0577f0d5ff1a6ec9ec4af56851012e78/mesh.stl";
+    if ((true) || (attributes.find("mesh_uri") != attributes.end())) {
+      //mesh_resource = attributes.find("mesh_uri")->second.get_str();
+      mesh_resource = "http://localhost:5984/object_recognition/0577f0d5ff1a6ec9ec4af56851012e78/mesh.stl";
       if (rviz::loadMeshFromResource(mesh_resource).isNull())
       {
         std::stringstream ss;
@@ -137,6 +130,15 @@ namespace object_recognition_ros
       }
     }
     visual->setMessage(object, mesh_resource);
+
+    Ogre::Quaternion orientation;
+    Ogre::Vector3 position;
+    if (!context_->getFrameManager()->getTransform(object.header.frame_id, object.header.stamp, position, orientation))
+    {
+      ROS_DEBUG(
+          "Error transforming from frame '%s' to frame '%s'", object.header.frame_id.c_str(), qPrintable( fixed_frame_ ));
+      return;
+    }
 
     visual->setFramePosition(position);
     visual->setFrameOrientation(orientation);

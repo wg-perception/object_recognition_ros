@@ -107,6 +107,7 @@ namespace object_recognition_ros
     // A SceneNode whose pose is set to match the coordinate frame of
     // the Object message header.
     Ogre::SceneNode* frame_node_;
+    Ogre::SceneNode* object_node_;
 
     // The SceneManager, kept here only so the destructor can ask it to
     // destroy the ``frame_node_``.
