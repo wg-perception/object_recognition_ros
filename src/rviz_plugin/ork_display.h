@@ -32,23 +32,15 @@
 
 #include <boost/foreach.hpp>
 
-#include <object_recognition_msgs/RecognizedObjectArray.h>
-#if ROS_FUERTE_FOUND
-#include <rviz/display.h>
-#else
+#include <pluginlib/class_loader.h>
 #include <rviz/message_filter_display.h>
-#endif
+
+#include <object_recognition_core/db/db.h>
+#include <object_recognition_msgs/RecognizedObjectArray.h>
 
 namespace Ogre
 {
   class SceneNode;
-}
-
-namespace rviz
-{
-  class ColorProperty;
-  class FloatProperty;
-  class IntProperty;
 }
 
 namespace object_recognition_ros
@@ -94,10 +86,13 @@ namespace object_recognition_ros
     void
     processMessage(const object_recognition_msgs::RecognizedObjectArrayConstPtr& msg);
 
-    // Storage for the list of visuals.
-    std::vector<boost::shared_ptr<OrkObjectVisual> > visuals_;
-  };
+  /** Storage for the list of visuals */
+  std::vector<boost::shared_ptr<OrkObjectVisual> > visuals_;
+  /** Loader for the custom DB classes */
+  boost::shared_ptr<
+      pluginlib::ClassLoader<object_recognition_core::db::ObjectDb> > db_class_loader_;
+};
 
-}// end namespace rviz_plugin_tutorials
+}
 
 #endif // ORK_DISPLAY_H

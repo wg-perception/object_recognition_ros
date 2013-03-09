@@ -34,8 +34,6 @@
 #include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreSceneManager.h>
 
-#include <tf/transform_listener.h>
-
 #include <rviz/frame_manager.h>
 #include <rviz/mesh_loader.h>
 #include <rviz/properties/color_property.h>
@@ -43,7 +41,6 @@
 #include <rviz/properties/int_property.h>
 #include <rviz/visualization_manager.h>
 
-#include <object_recognition_core/db/db.h>
 #include <object_recognition_core/db/prototypes/object_info.h>
 
 #include "ork_visual.h"
@@ -53,12 +50,11 @@
 namespace object_recognition_ros
 {
 
-// BEGIN_TUTORIAL
-// The constructor must have no arguments, so we can't give the
-// constructor the parameters it needs to fully initialize.
-  OrkObjectDisplay::OrkObjectDisplay()
-  {
-  }
+OrkObjectDisplay::OrkObjectDisplay() {
+  db_class_loader_.reset(
+      new pluginlib::ClassLoader<object_recognition_core::db::ObjectDb>(
+          "object_recognition_core", "object_recognition_core::db::ObjectDb"));
+}
 
 // After the top-level rviz::Display::initialize() does its own setup,
 // it calls the subclass's onInitialize() function.  This is where we
@@ -70,11 +66,9 @@ namespace object_recognition_ros
 // ``MessageFilterDisplay<message type>``, to save typing that long
 // templated class name every time you need to refer to the
 // superclass.
-  void
-  OrkObjectDisplay::onInitialize()
-  {
-    MFDClass::onInitialize();
-  }
+void OrkObjectDisplay::onInitialize() {
+  MFDClass::onInitialize();
+}
 
   OrkObjectDisplay::~OrkObjectDisplay()
   {
@@ -102,8 +96,25 @@ namespace object_recognition_ros
             context_->getSceneManager(), scene_node_, context_));
     visuals_.push_back(visual);
 
+  // Get the DB
+  object_recognition_core::db::ObjectDbPtr db;
+  object_recognition_core::db::ObjectDbParameters db_params(object.type.db);
+  if (db_params.type() == object_recognition_core::db::ObjectDbParameters::NONCORE) {
+    // If we're non-core, load the corresponding plugin
+    try
+    {
+      db = db_class_loader_->createInstance(db_params.raw().at("type").get_str());
+    }
+    catch(pluginlib::PluginlibException& ex)
+    {
+      //handle the class failing to load
+      ROS_ERROR("The plugin failed to load for some reason. Error: %s", ex.what());
+    }
+  } else {
+    db = db_params.generateDb();
+  }
+
     // Get the mesh URL and save it to a temporary file
-    object_recognition_core::db::ObjectDbPtr db = object_recognition_core::db::ObjectDbParameters(object.type.db).generateDb();
     or_json::mObject attributes;
     try
     {
@@ -119,8 +130,8 @@ namespace object_recognition_ros
     //std::string mesh_resource;
     std::string mesh_resource;
     if ((true) || (attributes.find("mesh_uri") != attributes.end())) {
-      //mesh_resource = attributes.find("mesh_uri")->second.get_str();
-      mesh_resource = "http://localhost:5984/object_recognition/0577f0d5ff1a6ec9ec4af56851012e78/mesh.stl";
+      mesh_resource = attributes.find("mesh_uri")->second.get_str();
+      //mesh_resource = "http://localhost:5984/object_recognition/0577f0d5ff1a6ec9ec4af56851012e78/mesh.stl";
       if (rviz::loadMeshFromResource(mesh_resource).isNull())
       {
         std::stringstream ss;
