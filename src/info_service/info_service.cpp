@@ -93,9 +93,7 @@ static bool onServiceRequest(
   } else if (object_info.has_attachment("mesh")) {
     // If the full mesh is stored in the object, save it to a temporary file and use it as the mesh URI
     mesh_file_name = std::string(std::tmpnam(0)) + ".stl";
-    std::ofstream file;
-    file.open(mesh_file_name.c_str(), std::ios::out | std::ios::binary);
-    std::stringstream stream;
+    std::ofstream file(mesh_file_name.c_str(), std::ios::out | std::ios::binary);
     object_info.get_attachment_stream("mesh", file);
     file.close();
     mesh_resource = std::string("file://") + mesh_file_name;
@@ -103,13 +101,21 @@ static bool onServiceRequest(
 
   if (!mesh_resource.empty()) {
     shapes::ShapeMsg shape_msg;
-    shapes::constructMsgFromShape(shapes::createMeshFromResource(mesh_resource), shape_msg);
-    res.information.ground_truth_mesh = boost::get<shape_msgs::Mesh>(shape_msg);
+    boost::scoped_ptr<shapes::Mesh> mesh(shapes::createMeshFromResource(mesh_resource));
+    if (mesh)
+    {
+      shapes::constructMsgFromShape(mesh.get(), shape_msg);
+      res.information.ground_truth_mesh = boost::get<shape_msgs::Mesh>(shape_msg);
+    }
+    else
+      ROS_ERROR_STREAM("Unable to construct shape message from " << mesh_resource);
   }
+  else
+    ROS_ERROR("Could not retrieve the mesh");
+
   // Delete the temporary file
   if (!mesh_file_name.empty())
     std::remove(mesh_file_name.c_str());
-
 
   return true;
 }
