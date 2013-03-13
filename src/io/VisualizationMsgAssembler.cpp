@@ -185,11 +185,11 @@ namespace object_recognition_core
         or_json::read(recognized_object.type.db, db_params);
 
         object_recognition_core::db::ObjectDbPtr db = object_recognition_core::db::ObjectDbParameters(db_params.get_obj()).generateDb();
-        or_json::mObject attributes;
+        object_recognition_core::prototypes::ObjectInfo object_info;
         try
         {
-          object_recognition_core::prototypes::ObjectInfo object_info(recognized_object.type.key, db);
-          attributes = object_info.attributes();
+          object_info = object_recognition_core::prototypes::ObjectInfo(recognized_object.type.key, db);
+          object_info.load_fields_and_attachments();
         }
         catch (...)
         {
@@ -220,8 +220,8 @@ namespace object_recognition_core
           marker.color.r = r;
           marker.id = 2*marker_id;
 
-          if (attributes.find("mesh_uri") != attributes.end())
-          marker.mesh_resource = attributes.find("mesh_uri")->second.get_str();
+          if (object_info.has_field("mesh_uri"))
+          marker.mesh_resource = object_info.get_field<std::string>("mesh_uri");
 
           marker_array.markers.push_back(marker);
         }
@@ -233,9 +233,9 @@ namespace object_recognition_core
           marker.lifetime = ros::Duration(10);
           marker.header = recognized_object.pose.header;
 
-          if (attributes.find("name") != attributes.end())
+          if (object_info.has_field("name"))
           {
-        	marker.text = attributes.find("name")->second.get_str();
+          marker.text = object_info.get_field<std::string>("name");
           }
           else
           {
