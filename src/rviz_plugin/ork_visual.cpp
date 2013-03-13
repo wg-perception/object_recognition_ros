@@ -27,9 +27,11 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <OGRE/OgreCommon.h>
 #include <OGRE/OgreEntity.h>
-#include <OGRE/OgreSceneNode.h>
 #include <OGRE/OgreSceneManager.h>
+#include <OGRE/OgreSceneNode.h>
+#include <OGRE/OgreSubEntity.h>
 #include <OGRE/OgreVector3.h>
 
 #include <rviz/display_context.h>
@@ -63,6 +65,7 @@ namespace object_recognition_ros
 
   // Initialize the axes
   axes_.reset(new rviz::Axes(scene_manager_, object_node_));
+  axes_->setScale(Ogre::Vector3(0.1, 0.1, 0.1));
 
   // Initialize the name
   name_.reset(new rviz::MovableText("EMPTY"));
@@ -83,6 +86,7 @@ namespace object_recognition_ros
       display_context_->getSceneManager()->destroyEntity(mesh_entity_);
       mesh_entity_ = 0;
     }
+    scene_manager_->destroySceneNode(object_node_);
     scene_manager_->destroySceneNode(frame_node_);
   }
 
@@ -92,10 +96,6 @@ namespace object_recognition_ros
     Ogre::Vector3 position(object.pose.pose.pose.position.x,
                         object.pose.pose.pose.position.y,
                         object.pose.pose.pose.position.z);
-    std::cout << object.pose.pose.pose.position.x << " " <<
-        object.pose.pose.pose.position.y  << " " <<
-        object.pose.pose.pose.position.z << std::endl;
-
     object_node_->setOrientation(
         Ogre::Quaternion(object.pose.pose.pose.orientation.w,
                          object.pose.pose.pose.orientation.x,
@@ -106,12 +106,8 @@ namespace object_recognition_ros
   // Set the name of the object
   name_->setCaption(object.type.key);
   //name_>setColor(color);
-  //name_->setVisible(true);
-  //name_->setGlobalTranslation(position);
-//  name_->setLocalTranslation(
-//      Ogre::Vector3(object.pose.pose.pose.position.x,
-//                    object.pose.pose.pose.position.y,
-//                    object.pose.pose.pose.position.z));
+  name_->setVisible(true);
+  name_->setLocalTranslation(Ogre::Vector3(0.1, 0, 0));
 
   if (!mesh_resource.empty()) {
     static uint32_t count = 0;
@@ -121,6 +117,9 @@ namespace object_recognition_ros
 
     mesh_entity_ = display_context_->getSceneManager()->createEntity(
         id, mesh_resource);
+    Ogre::MaterialPtr material = mesh_entity_->getSubEntity(0)->getMaterial();
+    material->setCullingMode(Ogre::CULL_NONE);
+    mesh_entity_->setMaterial(material);
     object_node_->attachObject(mesh_entity_);
 
     // In Ogre, mesh surface normals are not normalized if object is not

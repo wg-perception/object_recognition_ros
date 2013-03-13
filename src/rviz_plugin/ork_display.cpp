@@ -27,6 +27,8 @@
  * POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <fstream>
+#include <stdio.h>
 #include <string>
 
 #include <boost/foreach.hpp>
@@ -70,9 +72,11 @@ void OrkObjectDisplay::onInitialize() {
   MFDClass::onInitialize();
 }
 
-  OrkObjectDisplay::~OrkObjectDisplay()
-  {
-  }
+OrkObjectDisplay::~OrkObjectDisplay() {
+  for (std::map<std::string, std::string>::iterator iter = mesh_files_.begin();
+      iter != mesh_files_.end(); ++iter)
+    std::remove(iter->second.c_str());
+}
 
 // Clear the visuals by deleting their objects.
   void
@@ -91,55 +95,76 @@ void OrkObjectDisplay::onInitialize() {
     // it fails, we can't do anything else so we return.
 
   visuals_.clear();
-  BOOST_FOREACH(const object_recognition_msgs::RecognizedObject& object, msg->objects){
-    boost::shared_ptr<OrkObjectVisual> visual = boost::shared_ptr<OrkObjectVisual>(new OrkObjectVisual(
-            context_->getSceneManager(), scene_node_, context_));
+  for (size_t i_msg = 0; i_msg < msg->objects.size(); ++i_msg) {
+    const object_recognition_msgs::RecognizedObject& object = msg->objects[i_msg];
+    // Create a new visual for that message
+    boost::shared_ptr<OrkObjectVisual> visual = boost::shared_ptr<
+        OrkObjectVisual>(
+        new OrkObjectVisual(context_->getSceneManager(), scene_node_,
+                            context_));
     visuals_.push_back(visual);
 
-  // Get the DB
-  object_recognition_core::db::ObjectDbPtr db;
-  object_recognition_core::db::ObjectDbParameters db_params(object.type.db);
-  if (db_params.type() == object_recognition_core::db::ObjectDbParameters::NONCORE) {
-    // If we're non-core, load the corresponding plugin
-    try
-    {
-      db = db_class_loader_->createInstance(db_params.raw().at("type").get_str());
-    }
-    catch(pluginlib::PluginlibException& ex)
-    {
-      //handle the class failing to load
-      ROS_ERROR("The plugin failed to load for some reason. Error: %s", ex.what());
-    }
-  } else {
-    db = db_params.generateDb();
-  }
-
-    // Get the mesh URL and save it to a temporary file
-    or_json::mObject attributes;
-    try
-    {
-      object_recognition_core::prototypes::ObjectInfo object_info(object.type.key, db);
-      attributes = object_info.attributes();
-    }
-    catch (...)
-    {
-      ROS_ERROR("Cannot retrieved load mesh Object db not initialized");
-    }
-
-    // Now set or update the contents of the chosen visual.
-    //std::string mesh_resource;
+    // Check if we already have loaded the mesh
+    std::string object_hash = object.type.db + object.type.key;
     std::string mesh_resource;
-    if ((true) || (attributes.find("mesh_uri") != attributes.end())) {
-      mesh_resource = attributes.find("mesh_uri")->second.get_str();
-      //mesh_resource = "http://localhost:5984/object_recognition/0577f0d5ff1a6ec9ec4af56851012e78/mesh.stl";
-      if (rviz::loadMeshFromResource(mesh_resource).isNull())
-      {
-        std::stringstream ss;
-        ss << "Could not load [" << mesh_resource << "]";
-        ROS_DEBUG("%s", ss.str().c_str());
-        return;
+    if (mesh_resources_.find(object_hash) != mesh_resources_.end()) {
+      mesh_resource = mesh_resources_.find(object_hash)->second;
+    } else {
+      // Get the DB
+      object_recognition_core::db::ObjectDbPtr db;
+      object_recognition_core::db::ObjectDbParameters db_params(object.type.db);
+      if (db_params.type()
+          == object_recognition_core::db::ObjectDbParameters::NONCORE) {
+        // If we're non-core, load the corresponding plugin
+        try {
+          db = db_class_loader_->createInstance(
+              db_params.raw().at("type").get_str());
+        } catch (pluginlib::PluginlibException& ex) {
+          //handle the class failing to load
+          ROS_ERROR("The plugin failed to load for some reason. Error: %s",
+                    ex.what());
+        }
+      } else {
+        db = db_params.generateDb();
+      }
+
+      // Get information about the object
+      object_recognition_core::prototypes::ObjectInfo object_info;
+      try {
+        object_info = object_recognition_core::prototypes::ObjectInfo(
+            object.type.key, db);
+      } catch (...) {
+        ROS_ERROR("Cannot retrieve load mesh Object db not initialized");
+      }
+      object_info.load_fields_and_attachments();
+
+      // Use the mesh information
+      if (object_info.has_field("mesh_uri")) {
+        mesh_resource = object_info.get_field<std::string>("mesh_uri");
+      } else if (object_info.has_attachment("mesh")) {
+        // If the full mesh is stored in the object, save it to a temporary file and use it as the mesh URI
+        std::string file_name = std::string(std::tmpnam(0)) + ".stl";
+        std::ofstream file;
+        file.open(file_name.c_str(), std::ios::out | std::ios::binary);
+        std::stringstream stream;
+        object_info.get_attachment_stream("mesh", file);
+        file.close();
+        mesh_resource = std::string("file://") + file_name;
+        mesh_files_[object_hash] = file_name;
+      }
+      // Make the mesh be a resource
+      if (!mesh_resource.empty()) {
+        mesh_resources_[object_hash] = mesh_resource;
+        if (rviz::loadMeshFromResource(mesh_resource).isNull()) {
+          std::stringstream ss;
+          ss << "Could not load [" << mesh_resource << "]";
+          ROS_DEBUG("%s", ss.str().c_str());
+          return;
+        }
       }
     }
+
+    // Define the visual
     visual->setMessage(object, mesh_resource);
 
     Ogre::Quaternion orientation;

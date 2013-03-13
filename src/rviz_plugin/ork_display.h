@@ -91,6 +91,10 @@ namespace object_recognition_ros
   /** Loader for the custom DB classes */
   boost::shared_ptr<
       pluginlib::ClassLoader<object_recognition_core::db::ObjectDb> > db_class_loader_;
+  /** Keep track of the RViz resources containing the meshes retrieved for the DB */
+  std::map<std::string, std::string> mesh_resources_;
+  /** Keep track of the files loaded from the DB and stored locally in a tmp file */
+  std::map<std::string, std::string> mesh_files_;
 };
 
 }
