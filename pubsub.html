@@ -1,0 +1,175 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Publisher/Subscriber &mdash; object_recognition_ros</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="object_recognition_ros" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="index.html">object_recognition_ros</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/pubsub.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="publisher-subscriber">
+<span id="pubsub"></span><h1>Publisher/Subscriber<a class="headerlink" href="#publisher-subscriber" title="Permalink to this headline">¶</a></h1>
+<p>This package provides publishers and subscribers that are specific to ROS.</p>
+<p class="rubric">Sources</p>
+<div class="highlight-text"><div class="highlight"><pre>BagReader:
+   type: BagReader
+   module: object_recognition_ros.io.source.bag_reader
+   parameters:
+      #  The bag file name.
+      bag: data.bag
+      #  If the cropper cell is enabled
+      crop_enabled: True
+      #  The ROS topic for the depth camera info.
+      depth_camera_info: /camera/depth_registered/camera_info
+      #  The ROS topic for the depth image.
+      depth_image_topic: /camera/depth_registered/image
+      #  The ROS topic for the RGB camera info.
+      rgb_camera_info: /camera/rgb/camera_info
+      #  The ROS topic for the RGB image.
+      rgb_image_topic: /camera/rgb/image_color
+      #  The maximum x value (in the camera reference frame)
+      x_max: 3.40282346639e+38
+      #  The minimum x value (in the camera reference frame)
+      x_min: -3.40282346639e+38
+      #  The maximum y value (in the camera reference frame)
+      y_max: 3.40282346639e+38
+      #  The minimum y value (in the camera reference frame)
+      y_min: -3.40282346639e+38
+      #  The maximum z value (in the camera reference frame)
+      z_max: 3.40282346639e+38
+      #  The minimum z value (in the camera reference frame)
+      z_min: -3.40282346639e+38
+
+RosKinect:
+   type: RosKinect
+   module: object_recognition_ros.io.source.ros_kinect
+   parameters:
+      #  If the cropper cell is enabled
+      crop_enabled: True
+      #  The ROS topic for the depth camera info.
+      depth_camera_info: /camera/depth_registered/camera_info
+      #  The ROS topic for the depth image.
+      depth_image_topic: /camera/depth_registered/image
+      #  The ROS topic for the RGB camera info.
+      rgb_camera_info: /camera/rgb/camera_info
+      #  The ROS topic for the RGB image.
+      rgb_image_topic: /camera/rgb/image_color
+      #  The maximum x value (in the camera reference frame)
+      x_max: 3.40282346639e+38
+      #  The minimum x value (in the camera reference frame)
+      x_min: -3.40282346639e+38
+      #  The maximum y value (in the camera reference frame)
+      y_max: 3.40282346639e+38
+      #  The minimum y value (in the camera reference frame)
+      y_min: -3.40282346639e+38
+      #  The maximum z value (in the camera reference frame)
+      z_max: 3.40282346639e+38
+      #  The minimum z value (in the camera reference frame)
+      z_min: -3.40282346639e+38
+</pre></div>
+</div>
+<p class="rubric">Sinks</p>
+<div class="highlight-text"><div class="highlight"><pre>Publisher:
+   type: Publisher
+   module: object_recognition_ros.io.sink.publisher
+   parameters:
+      #  The DB parameters
+      db_params: &lt;object_recognition_core.boost.interface.ObjectDbParameters object at 0x2532f18&gt;
+      #  If True some markers are displayed for visualization. For RSO Groovy and above, use the
+      # RViz plugin instead.
+      do_visualize: False
+      #  Determines if the topics will be latched.
+      latched: True
+      #  The ROS topic to use for the marker array.
+      markers_topic: markers
+      #  The ROS topic to use for the object meta info string
+      object_ids_topic: object_ids
+      #  The ROS topic to use for the pose array.
+      pose_topic: poses
+      #  Sets whether the point cloud clusters have to be published or not
+      publish_clusters: True
+      #  The ROS topic to use for the recognized object
+      recognized_object_array_topic: recognized_object_array
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="index.html">object_recognition_ros</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013,  Willow Garage, Inc.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

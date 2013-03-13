@@ -8,7 +8,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>ROS integration &mdash; object_recognition_ros</title>
+    <title>Actionlib Server &mdash; object_recognition_ros</title>
     
     <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <link rel="top" title="object_recognition_ros" href="#" /> 
+    <link rel="top" title="object_recognition_ros" href="index.html" /> 
   </head>
   <body>
     <div class="related">
@@ -34,14 +34,14 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              accesskey="I">index</a></li>
-        <li><a href="#">object_recognition_ros</a> &raquo;</li> 
+        <li><a href="index.html">object_recognition_ros</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
   <h3>This Page</h3>
   <ul class="this-page-menu">
-    <li><a href="_sources/index.txt"
+    <li><a href="_sources/server.txt"
            rel="nofollow">Show Source</a></li>
   </ul>
 <div id="searchbox" style="display: none">
@@ -65,17 +65,22 @@
         <div class="bodywrapper">
           <div class="body">
             
-  <div class="section" id="ros-integration">
-<span id="ros"></span><h1>ROS integration<a class="headerlink" href="#ros-integration" title="Permalink to this headline">¶</a></h1>
-<p>This package defines several ROS interfaces for the <a class="reference external" href="http://wg-perception.github.com/object_recognition_core/index.html#index" title="(in object_recognition_core v)"><em class="xref std std-ref">Object Recognition Kitchen</em></a>. While <tt class="docutils literal"><span class="pre">ORK</span></tt> is ROS agnostic, several input/output cells are specific ROS and there is also an RViz plugin.</p>
-<blockquote>
-<div><ul class="simple">
-<li><a class="reference external" href="http://wg-perception.github.com/object_recognition_msgs/msgs.html#msgs" title="(in object_recognition_msgs v)"><em class="xref std std-ref">ROS messages</em></a></li>
-<li><a class="reference internal" href="pubsub.html#pubsub"><em>Publishers and Subscribers</em></a></li>
-<li><a class="reference internal" href="server.html#actionlib"><em>Actionlib Server</em></a></li>
-<li><a class="reference internal" href="rviz.html#rviz"><em>RViz Plugin</em></a></li>
-</ul>
-</div></blockquote>
+  <div class="section" id="actionlib-server">
+<span id="actionlib"></span><h1>Actionlib Server<a class="headerlink" href="#actionlib-server" title="Permalink to this headline">¶</a></h1>
+<p>The Actionlib server is defined at <a class="reference external" href="http://wg-perception.github.com/object_recognition_msgs/action.html#action" title="(in object_recognition_msgs v)"><em class="xref std std-ref">Actionlib Server</em></a>.</p>
+<p>To run it, you just need to start it with:</p>
+<div class="highlight-sh"><div class="highlight"><pre>rosrun object_recognition_server server -c whatever_config_file.ork
+</pre></div>
+</div>
+<p>You can also test it using the client:</p>
+<div class="highlight-sh"><div class="highlight"><pre>rosrun object_recognition_server client
+</pre></div>
+</div>
+<p>And that should display the received message.</p>
+<p>For testing, you can even run the server with a test pipeline:</p>
+<div class="highlight-sh"><div class="highlight"><pre>rosrun object_recognition_server server -c <span class="sb">`</span>rospack find object_recognition_ros<span class="sb">`</span>/conf/detection.test.ros.ork
+</pre></div>
+</div>
 </div>
 
 
@@ -90,7 +95,7 @@
         <li class="right" style="margin-right: 10px">
           <a href="genindex.html" title="General Index"
              >index</a></li>
-        <li><a href="#">object_recognition_ros</a> &raquo;</li> 
+        <li><a href="index.html">object_recognition_ros</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer">
