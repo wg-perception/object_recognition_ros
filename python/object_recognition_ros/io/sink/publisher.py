@@ -32,7 +32,8 @@ class Publisher(ecto.BlackBox, SinkBase):
 
     @staticmethod
     def declare_direct_params(p):
-        p.declare('do_visualize', 'If True some markers are displayed for visualization.', True)
+        p.declare('do_visualize', 'If True some markers are displayed for visualization. '
+                  'For RSO Groovy and above, use the RViz plugin instead.', False)
         p.declare('markers_topic', 'The ROS topic to use for the marker array.', 'markers')
         p.declare('pose_topic', 'The ROS topic to use for the pose array.', 'poses')
         p.declare('object_ids_topic', 'The ROS topic to use for the object meta info string', 'object_ids')
