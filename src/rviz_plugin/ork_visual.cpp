@@ -104,10 +104,14 @@ namespace object_recognition_ros
     object_node_->setPosition(position);
 
   // Set the name of the object
-  name_->setCaption(object.type.key);
-  //name_>setColor(color);
-  name_->setVisible(true);
-  name_->setLocalTranslation(Ogre::Vector3(0.1, 0, 0));
+  if (object.type.key.empty()) {
+    name_->setVisible(false);
+  } else {
+    name_->setCaption(object.type.key);
+    //name_>setColor(color);
+    name_->setVisible(true);
+    name_->setLocalTranslation(Ogre::Vector3(0.1, 0, 0));
+  }
 
   if (!mesh_resource.empty()) {
     static uint32_t count = 0;
