@@ -1,6 +1,9 @@
-add_subdirectory(io)
-add_subdirectory(rviz_plugin)
+if (${ROS_GROOVY_OR_ABOVE_FOUND})
 add_subdirectory(info_service)
+add_subdirectory(rviz_plugin)
+endif()
+
+add_subdirectory(io)
 
 # generate ecto cells to wrap the different messages
 pubsub_gen_wrap(object_recognition_msgs DESTINATION object_recognition_ros/ecto_cells

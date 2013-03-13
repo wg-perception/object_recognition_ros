@@ -4,8 +4,8 @@ project(object_recognition_ros)
 find_package(catkin REQUIRED)
 
 if (${catkin_VERSION} VERSION_GREATER "0.5.28")
-find_package(catkin REQUIRED ecto ecto_ros geometry_msgs object_recognition_core
-                             object_recognition_msgs rosbag roscpp rviz sensor_msgs tf
+find_package(catkin REQUIRED ecto ecto_ros geometric_shapes geometry_msgs object_recognition_core
+                             object_recognition_msgs pluginlib rosbag roscpp rviz sensor_msgs tf
                              visualization_msgs
 )
 catkin_package()

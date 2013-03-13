@@ -15,6 +15,7 @@
   <build_depend>ecto</build_depend>
   <build_depend>ecto_ros</build_depend>
   <build_depend>ecto_image_pipeline</build_depend>
+  <build_depend>geometric_shapes</build_depend>
   <build_depend>object_recognition_core</build_depend>
   <build_depend>object_recognition_msgs</build_depend>
   <build_depend>pcl</build_depend>
@@ -27,6 +28,7 @@
   <run_depend>ecto</run_depend>
   <run_depend>ecto_ros</run_depend>
   <run_depend>ecto_image_pipeline</run_depend>
+  <run_depend>geometric_shapes</run_depend>
   <run_depend>object_recognition_msgs</run_depend>
   <run_depend>pcl</run_depend>
   <run_depend>pluginlib</run_depend>
