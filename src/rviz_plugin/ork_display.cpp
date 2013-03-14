@@ -53,9 +53,6 @@ namespace object_recognition_ros
 {
 
 OrkObjectDisplay::OrkObjectDisplay() {
-  db_class_loader_.reset(
-      new pluginlib::ClassLoader<object_recognition_core::db::ObjectDb>(
-          "object_recognition_core", "object_recognition_core::db::ObjectDb"));
 }
 
 // After the top-level rviz::Display::initialize() does its own setup,
@@ -70,12 +67,6 @@ OrkObjectDisplay::OrkObjectDisplay() {
 // superclass.
 void OrkObjectDisplay::onInitialize() {
   MFDClass::onInitialize();
-}
-
-OrkObjectDisplay::~OrkObjectDisplay() {
-  for (std::map<std::string, std::string>::iterator iter = mesh_files_.begin();
-      iter != mesh_files_.end(); ++iter)
-    std::remove(iter->second.c_str());
 }
 
 // Clear the visuals by deleting their objects.
@@ -105,67 +96,26 @@ OrkObjectDisplay::~OrkObjectDisplay() {
     visuals_.push_back(visual);
 
     // Check if we already have loaded the mesh
-    std::string object_hash = object.type.db + object.type.key;
+    object_recognition_core::prototypes::ObjectInfo object_info;
+    info_cache_.getInfo(object.type, object_info);
+
+    // Make the mesh be a resource
     std::string mesh_resource;
-    if (mesh_resources_.find(object_hash) != mesh_resources_.end()) {
-      mesh_resource = mesh_resources_.find(object_hash)->second;
-    } else {
-      // Get the DB
-      object_recognition_core::db::ObjectDbPtr db;
-      object_recognition_core::db::ObjectDbParameters db_params(object.type.db);
-      if (db_params.type()
-          == object_recognition_core::db::ObjectDbParameters::NONCORE) {
-        // If we're non-core, load the corresponding plugin
-        try {
-          db = db_class_loader_->createInstance(
-              db_params.raw().at("type").get_str());
-        } catch (pluginlib::PluginlibException& ex) {
-          //handle the class failing to load
-          ROS_ERROR("The plugin failed to load for some reason. Error: %s",
-                    ex.what());
-        }
-      } else {
-        db = db_params.generateDb();
+    if (object_info.has_field("mesh_uri"))
+      mesh_resource = object_info.get_field<std::string>("mesh_uri");
+    if (!mesh_resource.empty()) {
+      if (rviz::loadMeshFromResource(mesh_resource).isNull()) {
+        std::stringstream ss;
+        ss << "Could not load [" << mesh_resource << "]";
+        ROS_DEBUG("%s", ss.str().c_str());
+        return;
       }
 
-      // Get information about the object
-      object_recognition_core::prototypes::ObjectInfo object_info;
-      try {
-        object_info = object_recognition_core::prototypes::ObjectInfo(
-            object.type.key, db);
-      } catch (...) {
-        ROS_ERROR("Cannot retrieve load mesh Object db not initialized");
-      }
-      object_info.load_fields_and_attachments();
-
-      // Use the mesh information
-      if (object_info.has_field("mesh_uri")) {
-        mesh_resource = object_info.get_field<std::string>("mesh_uri");
-      } else if (object_info.has_attachment("mesh")) {
-        // If the full mesh is stored in the object, save it to a temporary file and use it as the mesh URI
-        std::string file_name = std::string(std::tmpnam(0)) + ".stl";
-        std::ofstream file;
-        file.open(file_name.c_str(), std::ios::out | std::ios::binary);
-        std::stringstream stream;
-        object_info.get_attachment_stream("mesh", file);
-        file.close();
-        mesh_resource = std::string("file://") + file_name;
-        mesh_files_[object_hash] = file_name;
-      }
-      // Make the mesh be a resource
-      if (!mesh_resource.empty()) {
-        mesh_resources_[object_hash] = mesh_resource;
-        if (rviz::loadMeshFromResource(mesh_resource).isNull()) {
-          std::stringstream ss;
-          ss << "Could not load [" << mesh_resource << "]";
-          ROS_DEBUG("%s", ss.str().c_str());
-          return;
-        }
-      }
-    }
-
-    // Define the visual
-    visual->setMessage(object, mesh_resource);
+      // Define the visual
+      visual->setMessage(object,
+                         object_info.get_field < std::string > ("mesh_uri"));
+    } else
+      visual->setMessage(object, "");
 
     Ogre::Quaternion orientation;
     Ogre::Vector3 position;

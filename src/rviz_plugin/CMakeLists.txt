@@ -16,5 +16,6 @@ set(SOURCE_FILES
 
 add_library(${PROJECT_NAME}_rviz ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME}_rviz ${catkin_LIBRARIES}
+                                           object_information_cache
                                            ${QT_LIBRARIES}
 )

@@ -1,4 +1,5 @@
 if (${ROS_GROOVY_OR_ABOVE_FOUND})
+add_subdirectory(info_cache)
 add_subdirectory(info_service)
 add_subdirectory(rviz_plugin)
 endif()

@@ -30,6 +30,8 @@
 #ifndef ORK_DISPLAY_H
 #define ORK_DISPLAY_H
 
+#include <map>
+
 #include <boost/foreach.hpp>
 
 #include <pluginlib/class_loader.h>
@@ -37,6 +39,7 @@
 
 #include <object_recognition_core/db/db.h>
 #include <object_recognition_msgs/RecognizedObjectArray.h>
+#include <object_recognition_ros/object_info_cache.h>
 
 namespace Ogre
 {
@@ -65,8 +68,6 @@ namespace object_recognition_ros
     // Constructor.  pluginlib::ClassLoader creates instances by calling
     // the default constructor, so make sure you have one.
     OrkObjectDisplay();
-    virtual
-    ~OrkObjectDisplay();
 
     // Overrides of protected virtual functions from Display.  As much
     // as possible, when Displays are not enabled, they should not be
@@ -88,13 +89,8 @@ namespace object_recognition_ros
 
   /** Storage for the list of visuals */
   std::vector<boost::shared_ptr<OrkObjectVisual> > visuals_;
-  /** Loader for the custom DB classes */
-  boost::shared_ptr<
-      pluginlib::ClassLoader<object_recognition_core::db::ObjectDb> > db_class_loader_;
-  /** Keep track of the RViz resources containing the meshes retrieved for the DB */
-  std::map<std::string, std::string> mesh_resources_;
-  /** Keep track of the files loaded from the DB and stored locally in a tmp file */
-  std::map<std::string, std::string> mesh_files_;
+  /** Cache for al the info */
+  ObjectInfoDiskCache info_cache_;
 };
 
 }

@@ -35,6 +35,7 @@ catkin_python_setup()
 
 # build some cells
 include_directories(SYSTEM ${catkin_INCLUDE_DIRS})
+include_directories(include)
 
 add_subdirectory(python)
 
@@ -82,4 +83,9 @@ install(DIRECTORY launch
 # install the configuration files
 install(DIRECTORY ${PROJECT_SOURCE_DIR}/conf
         DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+# install the include dirs
+install(DIRECTORY ${PROJECT_SOURCE_DIR}/include/${PROJECT_NAME}/
+        DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
 )
