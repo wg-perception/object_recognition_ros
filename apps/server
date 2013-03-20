@@ -41,6 +41,10 @@ import rospy
 import sys
 
 if __name__ == '__main__':
+
+    ecto_argv = sys.argv[:]
+    ros_argv = sys.argv[:]
+
     # create an ORK parser (it is special as it can read from option files)
     parser = create_parser()
     parser.description = ' This file executes an actionlib server that executes the ORK plasm contained in the ' \
@@ -54,19 +58,17 @@ if __name__ == '__main__':
                        default='object_recognition', type=filter_node_name)
 
     # cleanup the arguments
-    original_argv = sys.argv
     clean_args = sys.argv
     ecto_ros.strip_ros_args(clean_args)
     args = parser.parse_args(args=clean_args[1:])
 
     if args.node_name and args.node_name != '""':
         rospy.loginfo('ORK server started with name: %s' % args.node_name)
-        ecto_ros.init(original_argv, args.node_name, False)
+        ecto_ros.init(ecto_argv, args.node_name, False)
 
     # add ecto options
     scheduler_options(parser)
-
     ork_params, _args = read_arguments(args)
-    rospy.init_node('recognize_objects_server')
+    rospy.init_node('recognize_objects_server', argv=ros_argv)
     server = RecognitionServer(ork_params)
     rospy.spin()
