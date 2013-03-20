@@ -42,8 +42,10 @@ import sys
 
 if __name__ == '__main__':
 
-    ecto_argv = sys.argv[:]
+    # make a copy for the args we pass to ROS later on
     ros_argv = sys.argv[:]
+    # make a copy for the args we pass to ecto later on
+    ecto_argv = sys.argv[:]
 
     # create an ORK parser (it is special as it can read from option files)
     parser = create_parser()
@@ -60,11 +62,11 @@ if __name__ == '__main__':
     # cleanup the arguments
     clean_args = sys.argv
     ecto_ros.strip_ros_args(clean_args)
-    args = parser.parse_args(args=clean_args[1:])
 
+    args = parser.parse_args(args=clean_args[1:])
     if args.node_name and args.node_name != '""':
         rospy.loginfo('ORK server started with name: %s' % args.node_name)
-        ecto_ros.init(ecto_argv, args.node_name, False)
+        ecto_ros.init([s for s in ecto_argv if not s.startswith('__name:=')], args.node_name, False)
 
     # add ecto options
     scheduler_options(parser)
