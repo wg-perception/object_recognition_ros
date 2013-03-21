@@ -140,36 +140,36 @@ void ObjectInfoRamCache::getInfo(
   if (object_info.has_field("name"))
     info.name = object_info.get_field<std::string>("name");
 
-  // Read the mesh to the mesh member
-  std::string mesh_resource;
-  std::string mesh_file_name;
-  if (object_info.has_field("mesh_uri")) {
-    mesh_resource = object_info.get_field<std::string>("mesh_uri");
-  } else if (object_info.has_attachment("mesh")) {
-    // If the full mesh is stored in the object, save it to a temporary file and use it as the mesh URI
-    mesh_file_name = std::string(std::tmpnam(0)) + ".stl";
-    std::ofstream file(mesh_file_name.c_str(), std::ios::out | std::ios::binary);
-    object_info.get_attachment_stream("mesh", file);
-    file.close();
-    mesh_resource = std::string("file://") + mesh_file_name;
-  }
+  boost::scoped_ptr<shapes::Mesh> mesh;
 
-  if (!mesh_resource.empty()) {
-    shapes::ShapeMsg shape_msg;
-    boost::scoped_ptr<shapes::Mesh> mesh(shapes::createMeshFromResource(mesh_resource));
-    if (mesh)
-    {
-      shapes::constructMsgFromShape(mesh.get(), shape_msg);
-      info.ground_truth_mesh = boost::get<shape_msgs::Mesh>(shape_msg);
+  if (object_info.has_attachment("mesh")) {
+    std::stringstream mesh_stream(std::ios::in | std::ios::out | std::ios::binary);
+    object_info.get_attachment_stream("mesh", mesh_stream);
+    mesh_stream.seekg(0, std::ios::end);
+    std::stringstream::pos_type size = mesh_stream.tellg();
+    if (size <= 0)
+      ROS_ERROR("Stored database mesh is empty for object key %s", type.key.c_str());
+    else {
+      char *buffer = new char[size];
+      mesh_stream.seekg(0, std::ios::beg);
+      mesh_stream.read(buffer, size);
+      mesh.reset(shapes::createMeshFromBinary(buffer, size, "stl"));
+      delete[] buffer;
+      if (!mesh)
+	ROS_ERROR("Unable to parse input mesh for object key %s", type.key.c_str());
     }
-    else
-      ROS_ERROR_STREAM("Unable to construct shape message from " << mesh_resource);
-  }
-  else
-    ROS_ERROR("Could not retrieve the mesh");
+  } else if (object_info.has_field("mesh_uri")) {
+    std::string mesh_uri = object_info.get_field<std::string>("mesh_uri");
+    mesh.reset(shapes::createMeshFromResource(mesh_uri));
+    if (!mesh)
+      ROS_ERROR("Mesh resource '%s' not loaded", mesh_uri.c_str());
+  } else
+    ROS_WARN("No mesh information about object with key '%s'", type.key.c_str());
 
-  // Delete the temporary file
-  if (!mesh_file_name.empty())
-    std::remove(mesh_file_name.c_str());
+  if (mesh) {
+    shapes::ShapeMsg shape_msg;
+    shapes::constructMsgFromShape(mesh.get(), shape_msg);
+    info.ground_truth_mesh = boost::get<shape_msgs::Mesh>(shape_msg);
+  }
 }
 }
