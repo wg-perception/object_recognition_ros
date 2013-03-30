@@ -48,17 +48,18 @@ ObjectInfoCache::ObjectInfoCache() {
           "object_recognition_core", "object_recognition_core::db::ObjectDb"));
 }
 
-void ObjectInfoCache::getInfoBase(
-    const object_recognition_msgs::ObjectType & type,
-    object_recognition_core::prototypes::ObjectInfo &info) {
+void ObjectInfoCache::getInfoBase(const object_recognition_msgs::ObjectType & type, bool &is_cached,
+                                  ObjectInfoPtr &object_info_ptr) {
 
   std::string object_hash = type.db + type.key;
   std::string mesh_resource;
 
   if (object_informations_.find(object_hash) != object_informations_.end()) {
-    info = object_informations_[object_hash];
+    is_cached = true;
+    object_info_ptr = object_informations_[object_hash];
     return;
   }
+  is_cached = false;
 
   // Get the DB
   object_recognition_core::db::ObjectDbParameters db_params(type.db);
@@ -87,13 +88,13 @@ void ObjectInfoCache::getInfoBase(
   object_recognition_core::db::ObjectDbPtr db = db_loaded_[db_params_str];
 
   // Get information about the object
-  object_recognition_core::prototypes::ObjectInfo object_info;
   try {
-    object_info = object_recognition_core::prototypes::ObjectInfo(type.key, db);
+    object_info_ptr.reset(new object_recognition_core::prototypes::ObjectInfo(type.key, db));
   } catch (...) {
     ROS_ERROR("Cannot retrieve load mesh Object db not initialized");
   }
-  object_info.load_fields_and_attachments();
+  object_info_ptr->load_fields_and_attachments();
+  object_informations_[object_hash] = object_info_ptr;
 }
 
 ObjectInfoDiskCache::~ObjectInfoDiskCache() {
@@ -107,18 +108,23 @@ void ObjectInfoDiskCache::getInfo(
     const object_recognition_msgs::ObjectType & type,
     object_recognition_core::prototypes::ObjectInfo &object_info) {
 
-  getInfoBase(type, object_info);
+  ObjectInfoPtr object_info_ptr;
+  bool is_cached;
+  getInfoBase(type, is_cached, object_info_ptr);
+  if (is_cached) {
+    object_info = *object_info_ptr;
+    return;
+  }
 
   // Fill the mesh
   std::string mesh_resource;
-  if (!(object_info.has_field("mesh_uri"))
-      && (object_info.has_attachment("mesh"))) {
+  if (!(object_info_ptr->has_field("mesh_uri")) && (object_info_ptr->has_attachment("mesh"))) {
     // If the full mesh is stored in the object, save it to a temporary file and use it as the mesh URI
     std::string file_name = std::string(std::tmpnam(0)) + ".stl";
     std::ofstream file;
     file.open(file_name.c_str(), std::ios::out | std::ios::binary);
     std::stringstream stream;
-    object_info.get_attachment_stream("mesh", file);
+    object_info_ptr->get_attachment_stream("mesh", file);
     file.close();
     mesh_resource = std::string("file://") + file_name;
     // Keep track of the files to delete them later
@@ -126,25 +132,28 @@ void ObjectInfoDiskCache::getInfo(
     mesh_files_[object_hash] = file_name;
   }
 
-  object_info.set_field("mesh_uri", mesh_resource);
+  object_info_ptr->set_field("mesh_uri", mesh_resource);
+
+  object_info = *object_info_ptr;
 }
 
 void ObjectInfoRamCache::getInfo(
     const object_recognition_msgs::ObjectType & type,
     object_recognition_msgs::ObjectInformation &info) {
 
-  object_recognition_core::prototypes::ObjectInfo object_info;
-  getInfoBase(type, object_info);
+  ObjectInfoPtr object_info_ptr;
+  bool is_cached;
+  getInfoBase(type, is_cached, object_info_ptr);
 
   // Fill the name
-  if (object_info.has_field("name"))
-    info.name = object_info.get_field<std::string>("name");
+  if (object_info_ptr->has_field("name"))
+    info.name = object_info_ptr->get_field<std::string>("name");
 
   boost::scoped_ptr<shapes::Mesh> mesh;
 
-  if (object_info.has_attachment("mesh")) {
+  if (object_info_ptr->has_attachment("mesh")) {
     std::stringstream mesh_stream(std::ios::in | std::ios::out | std::ios::binary);
-    object_info.get_attachment_stream("mesh", mesh_stream);
+    object_info_ptr->get_attachment_stream("mesh", mesh_stream);
     mesh_stream.seekg(0, std::ios::end);
     std::stringstream::pos_type size = mesh_stream.tellg();
     if (size <= 0)
@@ -158,8 +167,8 @@ void ObjectInfoRamCache::getInfo(
       if (!mesh)
 	ROS_ERROR("Unable to parse input mesh for object key %s", type.key.c_str());
     }
-  } else if (object_info.has_field("mesh_uri")) {
-    std::string mesh_uri = object_info.get_field<std::string>("mesh_uri");
+  } else if (object_info_ptr->has_field("mesh_uri")) {
+    std::string mesh_uri = object_info_ptr->get_field<std::string>("mesh_uri");
     mesh.reset(shapes::createMeshFromResource(mesh_uri));
     if (!mesh)
       ROS_ERROR("Mesh resource '%s' not loaded", mesh_uri.c_str());

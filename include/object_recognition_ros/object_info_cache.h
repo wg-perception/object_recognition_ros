@@ -38,6 +38,8 @@
 
 #include <string>
 
+#include <boost/shared_ptr.hpp>
+
 #include <pluginlib/class_loader.h>
 
 #include <object_recognition_core/db/prototypes/object_info.h>
@@ -51,9 +53,16 @@ class ObjectInfoCache {
   ObjectInfoCache();
 
  protected:
+  typedef boost::shared_ptr<object_recognition_core::prototypes::ObjectInfo> ObjectInfoPtr;
+  /**
+   *
+   * @param type the type of the object
+   * @param is_cached true if the object info is already in the cache
+   * @param info the info of the object
+   */
   void
-  getInfoBase(const object_recognition_msgs::ObjectType & type,
-              object_recognition_core::prototypes::ObjectInfo &info);
+  getInfoBase(const object_recognition_msgs::ObjectType & type, bool &is_cached,
+              ObjectInfoPtr &object_info_ptr);
 
  private:
   /** Loader for the custom DB classes */
@@ -62,7 +71,7 @@ class ObjectInfoCache {
   /** Temporary storage for the loaded DB's (for reusability) */
   std::map<std::string, object_recognition_core::db::ObjectDbPtr> db_loaded_;
   /** Keep track of the RViz resources containing the meshes retrieved for the DB */
-  std::map<std::string, object_recognition_core::prototypes::ObjectInfo> object_informations_;
+  std::map<std::string, ObjectInfoPtr> object_informations_;
 };
 
 class ObjectInfoDiskCache : public ObjectInfoCache {
