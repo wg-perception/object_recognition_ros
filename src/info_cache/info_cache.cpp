@@ -47,7 +47,6 @@ ObjectInfoCache::ObjectInfoCache() {
       new pluginlib::ClassLoader<object_recognition_core::db::ObjectDb>(
           "object_recognition_core", "object_recognition_core::db::ObjectDb"));
 }
-;
 
 void ObjectInfoCache::getInfoBase(
     const object_recognition_msgs::ObjectType & type,
@@ -80,6 +79,7 @@ void ObjectInfoCache::getInfoBase(
         ROS_ERROR("The plugin failed to load for some reason. Error: %s",
                   ex.what());
       }
+      db_loaded_[db_params_str]->set_parameters(db_params);
     } else {
       db_loaded_[db_params_str] = db_params.generateDb();
     }
