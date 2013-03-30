@@ -32,6 +32,7 @@
 """
 Define an actionlib server for ORK
 """
+from __future__ import print_function
 from object_recognition_core.pipelines.plasm import create_plasm
 from object_recognition_msgs.msg import RecognizedObjectArray
 from object_recognition_msgs.msg._ObjectRecognitionAction import ObjectRecognitionAction
