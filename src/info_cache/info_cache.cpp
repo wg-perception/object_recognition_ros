@@ -43,9 +43,6 @@
 namespace object_recognition_ros {
 
 ObjectInfoCache::ObjectInfoCache() {
-  db_class_loader_.reset(
-      new pluginlib::ClassLoader<object_recognition_core::db::ObjectDb>(
-          "object_recognition_core", "object_recognition_core::db::ObjectDb"));
 }
 
 void ObjectInfoCache::getInfoBase(const object_recognition_msgs::ObjectType & type, bool &is_cached,
@@ -72,6 +69,10 @@ void ObjectInfoCache::getInfoBase(const object_recognition_msgs::ObjectType & ty
     if (db_params.type()
         == object_recognition_core::db::ObjectDbParameters::NONCORE) {
       // If we're non-core, load the corresponding plugin
+      if (!db_class_loader_)
+        db_class_loader_.reset(
+          new pluginlib::ClassLoader<object_recognition_core::db::ObjectDb>(
+              "object_recognition_core", "object_recognition_core::db::ObjectDb"));
       try {
         db_loaded_[db_params_str] = db_class_loader_->createInstance(
             db_params.raw().at("type").get_str());
