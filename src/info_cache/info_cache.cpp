@@ -154,6 +154,7 @@ void ObjectInfoRamCache::getInfo(
 
   if (object_info_ptr->has_attachment("mesh")) {
     std::stringstream mesh_stream(std::ios::in | std::ios::out | std::ios::binary);
+
     object_info_ptr->get_attachment_stream("mesh", mesh_stream);
     mesh_stream.seekg(0, std::ios::end);
     std::stringstream::pos_type size = mesh_stream.tellg();
@@ -167,6 +168,8 @@ void ObjectInfoRamCache::getInfo(
       delete[] buffer;
       if (!mesh)
 	ROS_ERROR("Unable to parse input mesh for object key %s", type.key.c_str());
+      else
+	ROS_DEBUG("Read mesh for object key '%s'", type.key.c_str());
     }
   } else if (object_info_ptr->has_field("mesh_uri")) {
     std::string mesh_uri = object_info_ptr->get_field<std::string>("mesh_uri");
