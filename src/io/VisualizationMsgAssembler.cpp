@@ -52,7 +52,6 @@
 
 #include <object_recognition_core/common/pose_result.h>
 #include <object_recognition_core/common/types.h>
-#include <object_recognition_core/db/db.h>
 #include <object_recognition_core/db/prototypes/object_info.h>
 #include <object_recognition_msgs/RecognizedObject.h>
 #include <object_recognition_msgs/RecognizedObjectArray.h>

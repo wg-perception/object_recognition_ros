@@ -37,7 +37,6 @@
 #include <pluginlib/class_loader.h>
 #include <rviz/message_filter_display.h>
 
-#include <object_recognition_core/db/db.h>
 #include <object_recognition_msgs/RecognizedObjectArray.h>
 #include <object_recognition_ros/object_info_cache.h>
 

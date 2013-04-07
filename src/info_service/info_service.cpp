@@ -38,10 +38,6 @@
 #include <pluginlib/class_loader.h>
 #include <ros/ros.h>
 
-#include <object_recognition_core/db/db.h>
-#include <object_recognition_core/db/db_base.h>
-#include <object_recognition_core/db/db_parameters.h>
-#include <object_recognition_core/db/prototypes/object_info.h>
 #include <object_recognition_msgs/GetObjectInformation.h>
 
 #include <object_recognition_ros/object_info_cache.h>
