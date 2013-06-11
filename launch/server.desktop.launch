@@ -1,4 +1,7 @@
 <launch>
-  <arg name="config_file"/>
+
+  <arg name="config_file" default="$(find object_recognition_ros)/conf/detection.tod.example.ork"/>
+
   <node pkg="object_recognition_ros" ns="/object_recognition" name="object_recognition_server" output="screen" type="server" args="-c $(arg config_file)"/>
+
 </launch>
