@@ -1,5 +1,9 @@
 <launch>
+
+  <arg name="config_file" default="$(find object_recognition_ros)/conf/detection.tod.example.ork"/>
+
   <include file="$(find pr2_machine)/$(env ROBOT).machine"/>
-  <node pkg="object_recognition_ros" ns="/object_recognition" name="recognize_objects_server" output="screen" type="server" machine="c2" args="-c $(find object_recognition_ros)/conf/config_detection.sample">
+  <node pkg="object_recognition_ros" ns="/object_recognition" name="recognize_objects_server" output="screen" type="server" machine="c2" args="-c $(arg config_file)">
   </node>
+
 </launch>
