@@ -19,3 +19,5 @@ target_link_libraries(${PROJECT_NAME}_rviz ${catkin_LIBRARIES}
                                            object_information_cache
                                            ${QT_LIBRARIES}
 )
+install(TARGETS ${PROJECT_NAME}_rviz
+  DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION})
