@@ -16,7 +16,6 @@ ectomodule(io_ros DESTINATION ${PROJECT_NAME}/ecto_cells
            module.cpp
            MsgAssembler.cpp
            visualization_msgs_MarkerArray.cpp
-           VisualizationMsgAssembler.cpp
 )
 
 link_ecto(io_ros ${catkin_LIBRARIES}
