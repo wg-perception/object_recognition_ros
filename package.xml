@@ -18,7 +18,6 @@
   <build_depend>geometric_shapes</build_depend>
   <build_depend>object_recognition_core</build_depend>
   <build_depend>object_recognition_msgs</build_depend>
-  <build_depend>pcl_ros</build_depend>
   <build_depend>pluginlib</build_depend>
   <build_depend>rviz</build_depend>
 
@@ -30,7 +29,6 @@
   <run_depend>ecto_image_pipeline</run_depend>
   <run_depend>geometric_shapes</run_depend>
   <run_depend>object_recognition_msgs</run_depend>
-  <run_depend>pcl_ros</run_depend>
   <run_depend>pluginlib</run_depend>
   <run_depend>rostopic</run_depend>
   <run_depend>rviz</run_depend>

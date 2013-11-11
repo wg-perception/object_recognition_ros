@@ -49,10 +49,6 @@
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
 
-#include <pcl/point_cloud.h>
-#include <pcl/point_types.h>
-#include <pcl/ros/conversions.h>
-
 #include <opencv2/core/core.hpp>
 
 #include <object_recognition_core/common/pose_result.h>
