@@ -1,5 +1,6 @@
 0.2.5 (forthcoming)
 ----------------------------------
+- remove the OpenCV dependency
 - remove the PCL dependency
 
 0.2.4 (2013-09-26 00:13:06 -0800)

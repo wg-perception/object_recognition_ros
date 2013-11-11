@@ -24,7 +24,6 @@ if (NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
 endif()
 
 find_package(Boost REQUIRED system filesystem serialization)
-find_package(OpenCV REQUIRED)
 
 add_subdirectory(src)
 

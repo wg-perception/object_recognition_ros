@@ -16,6 +16,4 @@ ectomodule(io_ros DESTINATION ${PROJECT_NAME}/ecto_cells
            visualization_msgs_MarkerArray.cpp
 )
 
-link_ecto(io_ros ${catkin_LIBRARIES}
-                 ${OpenCV_LIBRARIES}
-)
+link_ecto(io_ros ${catkin_LIBRARIES})

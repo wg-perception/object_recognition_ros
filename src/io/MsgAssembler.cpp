@@ -49,8 +49,6 @@
 #include <sensor_msgs/Image.h>
 #include <sensor_msgs/PointCloud2.h>
 
-#include <opencv2/core/core.hpp>
-
 #include <object_recognition_core/common/pose_result.h>
 #include <object_recognition_core/common/types.h>
 #include <object_recognition_msgs/RecognizedObjectArray.h>
@@ -133,21 +131,21 @@ namespace object_recognition_core
           object.pose.header.frame_id = frame_id;
           object.pose.header.stamp = time;
 
-          cv::Vec3f T = pose_result.T<cv::Vec3f>();
-          cv::Matx33f R = pose_result.R<cv::Matx33f>();
+          std::vector<float> T = pose_result.T();
+          std::vector<float> R = pose_result.R();
 
           geometry_msgs::Pose & msg_pose = object.pose.pose.pose;
 
           Eigen::Matrix3f rotation_matrix;
-          for (unsigned int j = 0; j < 3; ++j)
-            for (unsigned int i = 0; i < 3; ++i)
-              rotation_matrix(j, i) = R(j, i);
+          for (unsigned int j = 0, k = 0; j < 3; ++j)
+            for (unsigned int i = 0; i < 3; ++i, ++k)
+              rotation_matrix(j, i) = R[k];
 
           Eigen::Quaternion<float> quaternion(rotation_matrix);
 
-          msg_pose.position.x = T(0);
-          msg_pose.position.y = T(1);
-          msg_pose.position.z = T(2);
+          msg_pose.position.x = T[0];
+          msg_pose.position.y = T[1];
+          msg_pose.position.z = T[2];
           msg_pose.orientation.x = quaternion.x();
           msg_pose.orientation.y = quaternion.y();
           msg_pose.orientation.z = quaternion.z();
