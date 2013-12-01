@@ -28,6 +28,7 @@
   <run_depend>ecto_ros</run_depend>
   <run_depend>ecto_image_pipeline</run_depend>
   <run_depend>geometric_shapes</run_depend>
+  <run_depend>object_recognition_core</run_depend>
   <run_depend>object_recognition_msgs</run_depend>
   <run_depend>pluginlib</run_depend>
   <run_depend>rostopic</run_depend>
