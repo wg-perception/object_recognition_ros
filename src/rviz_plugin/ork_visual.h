@@ -37,14 +37,14 @@
 namespace Ogre {
 class Entity;
 class Quaternion;
+class SceneManager;
+class SceneNode;
 class Vector3;
 }
 
 namespace rviz {
 class Axes;
-class Arrow;
 class DisplayContext;
-class MeshResourceMarker;
 class MovableText;
 }
 
@@ -52,10 +52,7 @@ namespace object_recognition_ros
 {
 // Declare the visual class for this display.
 //
-// Each instance of ImuVisual represents the visualization of a single
-// sensor_msgs::Imu message.  Currently it just shows an arrow with
-// the direction and magnitude of the acceleration vector, but could
-// easily be expanded to include more of the message data.
+// Each instance of OrkObjectVisual represents an object with its mesh and pose
   class OrkObjectVisual
   {
   public:

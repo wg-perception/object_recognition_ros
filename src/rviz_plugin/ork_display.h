@@ -30,36 +30,18 @@
 #ifndef ORK_DISPLAY_H
 #define ORK_DISPLAY_H
 
-#include <map>
-
-#include <boost/foreach.hpp>
-
-#include <pluginlib/class_loader.h>
 #include <rviz/message_filter_display.h>
 
 #include <object_recognition_msgs/RecognizedObjectArray.h>
 #include <object_recognition_ros/object_info_cache.h>
 
-namespace Ogre
-{
-  class SceneNode;
-}
-
 namespace object_recognition_ros
 {
 
-  class OrkObjectVisual;
+class OrkObjectVisual;
 
-// Here we declare our new subclass of rviz::Display.  Every display
-// which can be listed in the "Displays" panel is a subclass of
-// rviz::Display.
-//
-// OrkObjectDisplay will show a 3D arrow showing the direction and magnitude
-// of the IMU acceleration vector.  The base of the arrow will be at
-// the frame listed in the header of the Imu message, and the
-// direction of the arrow will be relative to the orientation of that
-// frame.  It will also optionally show a history of recent
-// acceleration vectors, which will be stored in a circular buffer.
+// OrkObjectDisplay will display a mesh for an object as well as its pose
+// through a TF
   class OrkObjectDisplay: public rviz::MessageFilterDisplay<object_recognition_msgs::RecognizedObjectArray>
   {
     Q_OBJECT
