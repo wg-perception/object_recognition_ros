@@ -112,8 +112,7 @@ void OrkObjectDisplay::onInitialize() {
       }
 
       // Define the visual
-      visual->setMessage(object,
-                         object_info.get_field < std::string > ("mesh_uri"));
+      visual->setMessage(object, mesh_resource);
     } else
       visual->setMessage(object, "");
 

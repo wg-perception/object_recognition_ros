@@ -118,9 +118,11 @@ void ObjectInfoDiskCache::getInfo(
   }
 
   // Fill the mesh
-  std::string mesh_resource;
+  if (!object_info_ptr->has_field("mesh_uri"))
+    object_info_ptr->set_field("mesh_uri", "");
   if (!(object_info_ptr->has_field("mesh_uri")) && (object_info_ptr->has_attachment("mesh"))) {
-    // If the full mesh is stored in the object, save it to a temporary file and use it as the mesh URI
+    std::string mesh_resource;
+    // If the full mesh is stored in the database, save it to a temporary file and use it as the mesh URI
     std::string file_name = std::string(std::tmpnam(0)) + ".stl";
     std::ofstream file;
     file.open(file_name.c_str(), std::ios::out | std::ios::binary);
@@ -131,9 +133,9 @@ void ObjectInfoDiskCache::getInfo(
     // Keep track of the files to delete them later
     std::string object_hash = type.db + type.key;
     mesh_files_[object_hash] = file_name;
-  }
 
-  object_info_ptr->set_field("mesh_uri", mesh_resource);
+    object_info_ptr->set_field("mesh_uri", mesh_resource);
+  }
 
   object_info = *object_info_ptr;
 }
