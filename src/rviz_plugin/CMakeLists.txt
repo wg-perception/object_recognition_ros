@@ -6,11 +6,14 @@ add_definitions(-DQT_NO_KEYWORDS)
 
 qt4_wrap_cpp(MOC_FILES
   ork_display.h
+  ork_table_display.h
 )
 
 set(SOURCE_FILES
   ork_display.cpp
   ork_visual.cpp
+  ork_table_display.cpp
+  ork_table_visual.cpp
   ${MOC_FILES}
 )
 
