@@ -80,7 +80,7 @@
       #  The ROS topic for the depth camera info.
       depth_camera_info: /camera/depth_registered/camera_info
       #  The ROS topic for the depth image.
-      depth_image_topic: /camera/depth_registered/image
+      depth_image_topic: /camera/depth_registered/image_raw
       #  The ROS topic for the RGB camera info.
       rgb_camera_info: /camera/rgb/camera_info
       #  The ROS topic for the RGB image.
@@ -107,7 +107,7 @@ RosKinect:
       #  The ROS topic for the depth camera info.
       depth_camera_info: /camera/depth_registered/camera_info
       #  The ROS topic for the depth image.
-      depth_image_topic: /camera/depth_registered/image
+      depth_image_topic: /camera/depth_registered/image_raw
       #  The ROS topic for the RGB camera info.
       rgb_camera_info: /camera/rgb/camera_info
       #  The ROS topic for the RGB image.
@@ -132,10 +132,7 @@ RosKinect:
    module: object_recognition_ros.io.sink.publisher
    parameters:
       #  The DB parameters
-      db_params: &lt;object_recognition_core.boost.interface.ObjectDbParameters object at 0x2532f18&gt;
-      #  If True some markers are displayed for visualization. For RSO Groovy and above, use the
-      # RViz plugin instead.
-      do_visualize: False
+      db_params: &lt;object_recognition_core.boost.interface.ObjectDbParameters object at 0x27c8a48&gt;
       #  Determines if the topics will be latched.
       latched: True
       #  The ROS topic to use for the marker array.

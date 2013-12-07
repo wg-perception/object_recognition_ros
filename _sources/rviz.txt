@@ -5,8 +5,18 @@
 RViz Plugin
 ###########
 
-`RViz <http://www.ros.org/wiki/rviz>`__ is a visualizer for ROS. ``ORK`` supports a plugin that enables seeing the
-recognized objects.
+`RViz <http://www.ros.org/wiki/rviz>`__ is a visualizer for ROS. ``ORK`` supports two plugins for object introspection.
+
+Table Plugin
+------------
+
+This plugin can display a ``Table.msg``, as can be found by the :ref:`Tabletop <orktabletop:tabletop>` pipeline for example.
+
+.. image:: plugin_table.png
+   :width: 100%
+
+Object Plugin
+-------------
 
 TODO screenshots
 
