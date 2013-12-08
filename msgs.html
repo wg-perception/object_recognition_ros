@@ -1,0 +1,235 @@
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Messages &mdash; object_recognition_ros</title>
+    
+    <link rel="stylesheet" href="_static/sphinxdoc.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '',
+        VERSION:     '',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="top" title="object_recognition_ros" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li><a href="index.html">object_recognition_ros</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Messages</a><ul>
+<li><a class="reference internal" href="#object-definition">Object Definition</a></li>
+<li><a class="reference internal" href="#recognized-objects">Recognized Objects</a></li>
+<li><a class="reference internal" href="#table">Table</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/msgs.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="messages">
+<span id="msgs"></span><h1>Messages<a class="headerlink" href="#messages" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="object-definition">
+<h2>Object Definition<a class="headerlink" href="#object-definition" title="Permalink to this headline">¶</a></h2>
+<p>An object is uniquely defined by a type and a database in <tt class="docutils literal"><span class="pre">ObjectId.msg</span></tt>:</p>
+<div class="highlight-text"><div class="highlight"><pre>################################################## OBJECT ID #########################################################
+
+# Contains information about the type of a found object. Those two sets of parameters together uniquely define an
+# object
+
+# The key of the found object: the unique identifier in the given db
+string key
+
+# The db parameters stored as a JSON/compressed YAML string. An object id does not make sense without the corresponding
+# database. E.g., in object_recognition, it can look like: &quot;{&#39;type&#39;:&#39;CouchDB&#39;, &#39;root&#39;:&#39;http://localhost&#39;}&quot;
+# There is no conventional format for those parameters and it&#39;s nice to keep that flexibility.
+# The object_recognition_core as a generic DB type that can read those fields
+# Current examples:
+# For CouchDB:
+#   type: &#39;CouchDB&#39;
+#   root: &#39;http://localhost:5984&#39;
+#   collection: &#39;object_recognition&#39;
+# For SQL household database:
+#   type: &#39;SqlHousehold&#39;
+#   host: &#39;wgs36&#39;
+#   port: 5432
+#   user: &#39;willow&#39;
+#   password: &#39;willow&#39;
+#   name: &#39;household_objects&#39;
+#   module: &#39;tabletop&#39;
+string db
+</pre></div>
+</div>
+<p>More information is also stored by <tt class="docutils literal"><span class="pre">ORK</span></tt> in the database. This information can be retrieved in
+<tt class="docutils literal"><span class="pre">ObjectInformation.msg</span></tt>:</p>
+<div class="highlight-text"><div class="highlight"><pre>############################################## VISUALIZATION INFO ######################################################
+################### THIS INFO SHOULD BE OBTAINED INDEPENDENTLY FROM THE CORE, LIKE IN AN RVIZ PLUGIN ###################
+
+# The human readable name of the object
+string name
+
+# The full mesh of the object: this can be useful for display purposes, augmented reality ... but it can be big
+# Make sure the type is MESH
+shape_msgs/Mesh ground_truth_mesh
+
+# Sometimes, you only have a cloud in the DB
+# Make sure the type is POINTS
+sensor_msgs/PointCloud2 ground_truth_point_cloud
+</pre></div>
+</div>
+</div>
+<div class="section" id="recognized-objects">
+<h2>Recognized Objects<a class="headerlink" href="#recognized-objects" title="Permalink to this headline">¶</a></h2>
+<p>When the objects are recognized, an array of recognized objects is published in <tt class="docutils literal"><span class="pre">RecognizedObjectArray.msg</span></tt>:</p>
+<div class="highlight-text"><div class="highlight"><pre>##################################################### HEADER ###########################################################
+Header header
+
+# This message type describes a potential scene configuration: a set of objects that can explain the scene
+object_recognition_msgs/RecognizedObject[] objects
+
+##################################################### SEARCH ###########################################################
+
+# The co-occurrence matrix between the recognized objects
+float32[] cooccurrence
+</pre></div>
+</div>
+<p>which contains several <tt class="docutils literal"><span class="pre">RecognizedObject.msg</span></tt>:</p>
+<div class="highlight-text"><div class="highlight"><pre>##################################################### HEADER ###########################################################
+
+# The header frame corresponds to the pose frame, NOT the point_cloud frame.
+Header header
+
+################################################## OBJECT INFO #########################################################
+
+# Contains information about the type and the position of a found object
+# Some of those fields might not be filled because the used techniques do not fill them or because the user does not
+# request them
+
+# The type of the found object
+object_recognition_msgs/ObjectType type
+
+#confidence: how sure you are it is that object and not another one.
+# It is between 0 and 1 and the closer to one it is the better
+float32 confidence
+
+################################################ OBJECT CLUSTERS #######################################################
+
+# Sometimes you can extract the 3d points that belong to the object, in the frames of the original sensors
+# (it is an array as you might have several sensors)
+sensor_msgs/PointCloud2[] point_clouds
+
+# Sometimes, you can only provide a bounding box/shape, even in 3d
+# This is in the pose frame
+shape_msgs/Mesh bounding_mesh
+
+# Sometimes, you only have 2d input so you can&#39;t really give a pose, you just get a contour, or a box
+# The last point will be linked to the first one automatically
+geometry_msgs/Point[] bounding_contours
+
+#################################################### POSE INFO #########################################################
+
+# This is the result that everybody expects : the pose in some frame given with the input. The units are radian/meters
+# as usual
+geometry_msgs/PoseWithCovarianceStamped pose
+</pre></div>
+</div>
+</div>
+<div class="section" id="table">
+<h2>Table<a class="headerlink" href="#table" title="Permalink to this headline">¶</a></h2>
+<p>There is that object that is pretty useful to recognize and it&#8217;s called a table. When found with the
+<a class="reference external" href="http://wg-perception.github.io/tabletop/index.html#tabletop" title="(in object_recognition_tabletop v)"><em class="xref std std-ref">Tabletop Detector</em></a> it publishes those two messages:</p>
+<div class="highlight-text"><div class="highlight"><pre># Informs that a planar table has been detected at a given location
+
+Header header
+
+# The pose gives you the transform that take you to the coordinate system
+# of the table, with the origin somewhere in the table plane and the 
+# z axis normal to the plane
+geometry_msgs/Pose pose
+
+# There is no guarantee that the table does NOT extend further than the
+# convex hull; this is just as far as we&#39;ve observed it.
+# The origin of the table coordinate system is inside the convex hull
+
+# Set of points forming the convex hull of the table
+geometry_msgs/Point[] convex_hull
+</pre></div>
+</div>
+<div class="highlight-text"><div class="highlight"><pre>Header header
+
+# Just an array of tables
+object_recognition_msgs/Table[] tables
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li><a href="index.html">object_recognition_ros</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2013,  Willow Garage, Inc.
+      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+    </div>
+  </body>
+</html>

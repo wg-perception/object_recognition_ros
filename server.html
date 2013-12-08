@@ -39,6 +39,12 @@
     </div>
       <div class="sphinxsidebar">
         <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Actionlib Server</a></li>
+<li><a class="reference internal" href="#service">Service</a></li>
+</ul>
+
   <h3>This Page</h3>
   <ul class="this-page-menu">
     <li><a href="_sources/server.txt"
@@ -67,7 +73,18 @@
             
   <div class="section" id="actionlib-server">
 <span id="actionlib"></span><h1>Actionlib Server<a class="headerlink" href="#actionlib-server" title="Permalink to this headline">¶</a></h1>
-<p>The Actionlib server is defined at <a class="reference external" href="http://wg-perception.github.io/object_recognition_msgs/action.html#action" title="(in object_recognition_msgs v)"><em class="xref std std-ref">Actionlib Server</em></a>.</p>
+<p>The Actionlib server helps you retrieve the identified objects in the current snapshot.
+It is defined as follows:</p>
+<div class="highlight-python"><pre># Optional ROI to use for the object detection
+bool use_roi
+float32[] filter_limits
+---
+# Send the found objects, see the msg files for docs
+object_recognition_msgs/RecognizedObjectArray recognized_objects
+---
+#no feedback
+</pre>
+</div>
 <p>To run it, you just need to start it with:</p>
 <div class="highlight-sh"><div class="highlight"><pre>rosrun object_recognition_server server -c whatever_config_file.ork
 </pre></div>
@@ -79,6 +96,22 @@
 <p>And that should display the received message.</p>
 <p>For testing, you can even run the server with a test pipeline:</p>
 <div class="highlight-sh"><div class="highlight"><pre>rosrun object_recognition_server server -c <span class="sb">`</span>rospack find object_recognition_ros<span class="sb">`</span>/conf/detection.test.ros.ork
+</pre></div>
+</div>
+</div>
+<div class="section" id="service">
+<span id="srv"></span><h1>Service<a class="headerlink" href="#service" title="Permalink to this headline">¶</a></h1>
+<p>There is a service to get object information: just query it and it will retrieve anything
+that is known about the object. Its definition is as follows:</p>
+<div class="highlight-text"><div class="highlight"><pre># Retrieve extra data from the DB for a given object
+
+# The type of the object to retrieve info from
+object_recognition_msgs/ObjectType type
+
+---
+
+# Extra object info 
+object_recognition_msgs/ObjectInformation information
 </pre></div>
 </div>
 </div>
