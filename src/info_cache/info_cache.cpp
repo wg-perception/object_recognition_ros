@@ -118,8 +118,6 @@ void ObjectInfoDiskCache::getInfo(
   }
 
   // Fill the mesh
-  if (!object_info_ptr->has_field("mesh_uri"))
-    object_info_ptr->set_field("mesh_uri", "");
   if (!(object_info_ptr->has_field("mesh_uri")) && (object_info_ptr->has_attachment("mesh"))) {
     std::string mesh_resource;
     // If the full mesh is stored in the database, save it to a temporary file and use it as the mesh URI
