@@ -41,7 +41,7 @@
 #include <rviz/ogre_helpers/axes.h>
 #include <rviz/ogre_helpers/movable_text.h>
 
-#include "ork_visual.h"
+#include "ork_object_visual.h"
 
 namespace object_recognition_ros
 {

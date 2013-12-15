@@ -45,9 +45,9 @@
 
 #include <object_recognition_core/db/prototypes/object_info.h>
 
-#include "ork_visual.h"
+#include "ork_object_visual.h"
 
-#include "ork_display.h"
+#include "ork_object_display.h"
 
 namespace object_recognition_ros
 {
