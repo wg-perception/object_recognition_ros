@@ -90,9 +90,10 @@ namespace object_recognition_ros
     scene_manager_->destroySceneNode(frame_node_);
   }
 
-  void
-  OrkObjectVisual::setMessage(const object_recognition_msgs::RecognizedObject& object, const std::string& mesh_resource)
-  {
+void
+OrkObjectVisual::setMessage(const object_recognition_msgs::RecognizedObject& object, const std::string& name, const std::string& mesh_resource,
+                            bool do_display_id, bool do_display_name, bool do_display_confidence)
+{
     Ogre::Vector3 position(object.pose.pose.pose.position.x,
                         object.pose.pose.pose.position.y,
                         object.pose.pose.pose.position.z);
@@ -104,11 +105,20 @@ namespace object_recognition_ros
     object_node_->setPosition(position);
 
   // Set the name of the object
-  if (object.type.key.empty()) {
+  std::stringstream caption;
+  if ((!object.type.key.empty()) && (do_display_id))
+    caption << object.type.key << std::endl;
+  if ((!name.empty()) && (do_display_name))
+    caption << name << std::endl;
+
+  // Set the caption of the object
+  if (do_display_confidence)
+    caption << object.confidence;
+
+  if (caption.str().empty())
     name_->setVisible(false);
-  } else {
-    name_->setCaption(object.type.key);
-    //name_>setColor(color);
+  else {
+    name_->setCaption(caption.str());
     name_->setVisible(true);
     name_->setLocalTranslation(Ogre::Vector3(0.1, 0, 0));
   }

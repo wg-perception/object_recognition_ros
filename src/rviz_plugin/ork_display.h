@@ -72,6 +72,12 @@ class OrkObjectVisual;
   std::vector<boost::shared_ptr<OrkObjectVisual> > visuals_;
   /** Cache for al the info */
   ObjectInfoDiskCache info_cache_;
+  /** flag indicating whether the hull should be displayed */
+  rviz::BoolProperty* do_display_id_;
+  /** flag indicating whether the bounding box should be displayed */
+  rviz::BoolProperty* do_display_name_;
+  /** flag indicating whether the table top should be displayed */
+  rviz::BoolProperty* do_display_confidence_;
 };
 
 }

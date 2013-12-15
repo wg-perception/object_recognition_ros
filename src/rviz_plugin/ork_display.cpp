@@ -53,6 +53,9 @@ namespace object_recognition_ros
 {
 
 OrkObjectDisplay::OrkObjectDisplay() {
+  do_display_id_ = new rviz::BoolProperty("ID", false, "Display the DB ID or not.", this);
+  do_display_name_ = new rviz::BoolProperty("Name", true, "Display the object name or not.", this);
+  do_display_confidence_ = new rviz::BoolProperty("Confidence", true, "Display the match confidence or not.", this);
 }
 
 // After the top-level rviz::Display::initialize() does its own setup,
@@ -110,11 +113,16 @@ void OrkObjectDisplay::onInitialize() {
         ROS_DEBUG("%s", ss.str().c_str());
         return;
       }
-
-      // Define the visual
-      visual->setMessage(object, mesh_resource);
     } else
-      visual->setMessage(object, "");
+      mesh_resource = "";
+
+    // Get the name of the object
+    std::string name;
+    if (object_info.has_field("name"))
+      name = object_info.get_field<std::string>("name");
+
+    // Define the visual
+    visual->setMessage(object, name, mesh_resource, do_display_id_->getBool(), do_display_name_->getBool(), do_display_confidence_->getBool());
 
     Ogre::Quaternion orientation;
     Ogre::Vector3 position;

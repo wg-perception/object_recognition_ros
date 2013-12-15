@@ -67,11 +67,17 @@ namespace object_recognition_ros
     virtual
     ~OrkObjectVisual();
 
-    /** Configure the visual to show the data in the message.
-     * @param mesh_file The file in which the mesh is stored
-     */
-    void
-    setMessage(const object_recognition_msgs::RecognizedObject& msg, const std::string& mesh_file);
+  /** Configure the visual to show the data in the message.
+   * @param msg the message defining the object to add a visual for
+   * @param name the name of the object to display
+   * @param mesh_file The file in which the mesh is stored
+   * @param do_display_id whether the object id is displayed
+   * @param do_display_name whether the object name is displayed
+   * @param do_display_confidence whether the object confidence is displayed
+   */
+  void
+  setMessage(const object_recognition_msgs::RecognizedObject& msg, const std::string& name, const std::string& mesh_file,
+             bool do_display_id, bool do_display_name, bool do_display_confidence);
 
     // Set the pose of the coordinate frame the message refers to.
     // These could be done inside setMessage(), but that would require
