@@ -75,12 +75,16 @@ OrkTableVisual::setMessage(const object_recognition_msgs::Table& table, bool do_
   Ogre::Vector3 position(table.pose.position.x,
                          table.pose.position.y,
                          table.pose.position.z);
-  object_node_->setOrientation(
-    Ogre::Quaternion(table.pose.orientation.w,
-                     table.pose.orientation.x,
-                     table.pose.orientation.y,
-                     table.pose.orientation.z));
+  Ogre::Quaternion orientation(table.pose.orientation.w,
+                               table.pose.orientation.x,
+                               table.pose.orientation.y,
+                               table.pose.orientation.z);
+  if(position.isNaN() || orientation.isNaN()){
+    ROS_WARN("received invalid table message (invalid pose)");
+    return;
+  }
   object_node_->setPosition(position);
+  object_node_->setOrientation(orientation);
 
   // Set the arrow on the object
   if (do_display_top) {
@@ -90,11 +94,20 @@ OrkTableVisual::setMessage(const object_recognition_msgs::Table& table, bool do_
   } else
     arrow_->setScale(Ogre::Vector3(0, 0, 0));
 
+  bounding_box_->clear();
+  convex_hull_->clear();
+
   //get the extents of the table
   float x_min = std::numeric_limits<float>::max(), x_max = -x_min;
   float y_min = std::numeric_limits<float>::max(), y_max = -y_min;
 
   for (size_t i = 0; i < table.convex_hull.size(); ++i) {
+    if(Ogre::Math::isNaN(table.convex_hull[i].x) ||
+       Ogre::Math::isNaN(table.convex_hull[i].y) ||
+       Ogre::Math::isNaN(table.convex_hull[i].z)){
+      ROS_WARN("received invalid table hull (contains NaN)");
+      return;
+    }
     if (table.convex_hull[i].x < x_min)
       x_min = table.convex_hull[i].x;
     if (table.convex_hull[i].x > x_max)
@@ -105,7 +118,6 @@ OrkTableVisual::setMessage(const object_recognition_msgs::Table& table, bool do_
       y_max = table.convex_hull[i].y;
   }
   // Set the bounding box
-  bounding_box_->clear();
   if (do_display_bounding_box) {
     bounding_box_->addPoint(Ogre::Vector3(x_min, y_min, 0));
     bounding_box_->addPoint(Ogre::Vector3(x_min, y_max, 0));
@@ -117,7 +129,6 @@ OrkTableVisual::setMessage(const object_recognition_msgs::Table& table, bool do_
   }
 
   // Set the convex hull
-  convex_hull_->clear();
   if (do_display_hull) {
     for (size_t i = 0; i < table.convex_hull.size(); ++i)
       convex_hull_->addPoint(Ogre::Vector3(table.convex_hull[i].x, table.convex_hull[i].y, 0));
