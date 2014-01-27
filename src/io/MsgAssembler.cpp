@@ -132,15 +132,9 @@ struct MsgAssembler {
           object.header.frame_id = frame_id;
           object.header.stamp = time;
 
-          // Deal with the partial point clouds
-          if(*publish_clusters_)
-          {
-			  object.point_clouds.resize(pose_result.clouds().size());
-			  for(size_t i = 0; i < pose_result.clouds().size(); ++i)
-			  {
-				  object.point_clouds[i] = *(pose_result.clouds()[i]);
-			  }
-          }
+        // Deal with the partial point clouds
+        if (*publish_clusters_)
+          object.point_clouds = pose_result.clouds();
 
           ++object_id;
         }
