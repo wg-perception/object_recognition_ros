@@ -118,7 +118,7 @@ OrkTableVisual::setMessage(const object_recognition_msgs::Table& table, bool do_
       y_max = table.convex_hull[i].y;
   }
   // Set the bounding box
-  if (do_display_bounding_box) {
+  if (do_display_bounding_box && (x_min <= x_max) && (y_min <= y_max) ) {
     bounding_box_->addPoint(Ogre::Vector3(x_min, y_min, 0));
     bounding_box_->addPoint(Ogre::Vector3(x_min, y_max, 0));
     bounding_box_->addPoint(Ogre::Vector3(x_max, y_max, 0));
