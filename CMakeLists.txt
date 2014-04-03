@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 2.8)
 project(object_recognition_ros)
 
-find_package(catkin REQUIRED ecto ecto_ros geometric_shapes geometry_msgs object_recognition_core
+find_package(catkin REQUIRED cmake_modules ecto ecto_ros geometric_shapes geometry_msgs object_recognition_core
                              object_recognition_msgs pluginlib rosbag roscpp rviz sensor_msgs tf
                              visualization_msgs
 )
