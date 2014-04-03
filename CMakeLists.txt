@@ -16,8 +16,6 @@ include_directories(include)
 
 add_subdirectory(python)
 
-add_definitions("-Wno-pragmas -fno-strict-aliasing -Wall -Wl,--no-undefined -Werror")
-
 #set the default path for built libraries to the lib directory
 if (NOT CMAKE_LIBRARY_OUTPUT_DIRECTORY)
   set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
