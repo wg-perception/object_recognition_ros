@@ -1,5 +1,5 @@
-Forthcoming
------------
+0.3.2 (2014-04-13)
+------------------
 * compile under Indigo
 * compile under Indigo
 * Merge pull request `#10 <https://github.com/wg-perception/object_recognition_ros/issues/10>`_ from v4hn/pose_result-no-db-fix
