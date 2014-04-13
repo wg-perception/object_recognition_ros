@@ -1,3 +1,24 @@
+Forthcoming
+-----------
+* compile under Indigo
+* compile under Indigo
+* Merge pull request `#10 <https://github.com/wg-perception/object_recognition_ros/issues/10>`_ from v4hn/pose_result-no-db-fix
+  don't segfault without a valid database entry
+* comply to the new API
+* fixes `#12 <https://github.com/wg-perception/object_recognition_ros/issues/12>`_
+* Merge pull request `#11 <https://github.com/wg-perception/object_recognition_ros/issues/11>`_ from v4hn/table-nan-no-ogre-exception
+  don't throw ogre exception when receiving invalid table
+* don't throw ogre exception when receiving invalid table
+  Although it should not happen, the plugin should still
+  verify it's input messages before passing them on to OGRE.
+  Otherwise rviz crashes:
+  rviz: /build/buildd/ogre-1.7.4/OgreMain/src/OgreNode.cpp:413: virtual void
+  Ogre::Node::setPosition(const Ogre::Vector3&): Assertion `!pos.isNaN() &&
+  "Invalid vector supplied as parameter"' failed.
+  Aborted (core dumped)
+* don't segfault without a valid database entry
+* Contributors: Vincent Rabaud, v4hn
+
 0.3.1 (2013-12-18  21:12:06 +0100)
 ----------------------------------
 - fix disappearing mesh
