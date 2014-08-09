@@ -100,7 +100,16 @@ void OrkObjectDisplay::onInitialize() {
 
     // Check if we already have loaded the mesh
     object_recognition_core::prototypes::ObjectInfo object_info;
-    info_cache_.getInfo(object.type, object_info);
+    try
+    {
+      info_cache_.getInfo(object.type, object_info);
+    }
+    catch(...)
+    {
+      // If getInfo() throws an exception it leaves object_info
+      // empty, so we can continue with a labelled axis, which is
+      // still useful.
+    }
 
     // Make the mesh be a resource
     std::string mesh_resource;
