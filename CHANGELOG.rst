@@ -1,5 +1,5 @@
-Forthcoming
------------
+0.3.3 (2014-08-14)
+------------------
 * Added try/catch in rviz plugin to prevent crash
 * Contributors: Dave Hershberger, Sammy Pfeiffer
 
