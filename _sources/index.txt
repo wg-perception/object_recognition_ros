@@ -11,4 +11,5 @@ This package defines several ROS interfaces for the :ref:`Object Recognition Kit
    * :ref:`Service for Object Info <srv>`
    * :ref:`Actionlib Server <actionlib>`
    * :ref:`Publishers and Subscribers <pubsub>`
-   * :ref:`RViz Plugin <rviz>`
+
+There is also an :ref:`RViz plugin <orkrviz:rviz>`

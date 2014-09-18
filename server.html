@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
@@ -15,7 +13,7 @@
     
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '',
+        URL_ROOT:    './',
         VERSION:     '',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
@@ -75,7 +73,7 @@
 <span id="actionlib"></span><h1>Actionlib Server<a class="headerlink" href="#actionlib-server" title="Permalink to this headline">¶</a></h1>
 <p>The Actionlib server helps you retrieve the identified objects in the current snapshot.
 It is defined as follows:</p>
-<div class="highlight-python"><pre># Optional ROI to use for the object detection
+<div class="highlight-python"><div class="highlight"><pre># Optional ROI to use for the object detection
 bool use_roi
 float32[] filter_limits
 ---
@@ -83,7 +81,7 @@ float32[] filter_limits
 object_recognition_msgs/RecognizedObjectArray recognized_objects
 ---
 #no feedback
-</pre>
+</pre></div>
 </div>
 <p>To run it, you just need to start it with:</p>
 <div class="highlight-sh"><div class="highlight"><pre>rosrun object_recognition_server server -c whatever_config_file.ork
@@ -133,7 +131,7 @@ object_recognition_msgs/ObjectInformation information
     </div>
     <div class="footer">
         &copy; Copyright 2013,  Willow Garage, Inc.
-      Created using <a href="http://sphinx.pocoo.org/">Sphinx</a> 1.1.3.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.2.
     </div>
   </body>
 </html>
