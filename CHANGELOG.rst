@@ -1,3 +1,11 @@
+Forthcoming
+-----------
+* move RViz documentation to object_recognition_ros_visualization
+* simplify package.xml
+* add proper dependencies
+* split ork_ros into ork_ros and ork_ros_visualization
+* Contributors: Ha Dang, Vincent Rabaud
+
 0.3.3 (2014-08-14)
 ------------------
 * Added try/catch in rviz plugin to prevent crash
