@@ -5,7 +5,9 @@ find_package(catkin REQUIRED cmake_modules ecto ecto_ros geometric_shapes geomet
                              object_recognition_msgs pluginlib rosbag roscpp sensor_msgs tf
                              visualization_msgs
 )
-catkin_package()
+catkin_package(INCLUDE_DIRS include
+  CATKIN_DEPENDS object_recognition_core object_recognition_msgs
+)
 
 #install targets for all things python
 catkin_python_setup()
