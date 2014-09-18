@@ -12,7 +12,6 @@
   <build_depend>actionlib</build_depend>
   <build_depend>boost</build_depend>
   <build_depend>cmake_modules</build_depend>
-  <build_depend>curl</build_depend>
   <build_depend>ecto</build_depend>
   <build_depend>ecto_ros</build_depend>
   <build_depend>ecto_image_pipeline</build_depend>
@@ -23,7 +22,6 @@
 
   <run_depend>actionlib</run_depend>
   <run_depend>boost</run_depend>
-  <run_depend>curl</run_depend>
   <run_depend>ecto</run_depend>
   <run_depend>ecto_ros</run_depend>
   <run_depend>ecto_image_pipeline</run_depend>
