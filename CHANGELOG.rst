@@ -1,5 +1,5 @@
-Forthcoming
------------
+0.3.4 (2014-09-18)
+------------------
 * move RViz documentation to object_recognition_ros_visualization
 * simplify package.xml
 * add proper dependencies
