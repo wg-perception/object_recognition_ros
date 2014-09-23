@@ -6,6 +6,7 @@ find_package(catkin REQUIRED cmake_modules ecto ecto_ros geometric_shapes geomet
                              visualization_msgs
 )
 catkin_package(INCLUDE_DIRS include
+  LIBRARIES object_information_cache
   CATKIN_DEPENDS object_recognition_core object_recognition_msgs
 )
 
