@@ -36,6 +36,8 @@
 #include <sstream>
 #include <stdio.h>
 
+#include <boost/scoped_ptr.hpp>
+
 #include <geometric_shapes/shape_operations.h>
 
 #include <object_recognition_ros/object_info_cache.h>
