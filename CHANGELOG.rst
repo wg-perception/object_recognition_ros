@@ -1,5 +1,5 @@
-Forthcoming
------------
+0.3.5 (2014-11-20)
+------------------
 * remove useless dependency on tf
 * Merge pull request `#17 <https://github.com/wg-perception/object_recognition_ros/issues/17>`_ from v4hn/boost-scoped-ptr
   add missing include of scoped_ptr
