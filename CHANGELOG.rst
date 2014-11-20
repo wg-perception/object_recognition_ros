@@ -1,3 +1,13 @@
+Forthcoming
+-----------
+* remove useless dependency on tf
+* Merge pull request `#17 <https://github.com/wg-perception/object_recognition_ros/issues/17>`_ from v4hn/boost-scoped-ptr
+  add missing include of scoped_ptr
+* add missing include of scoped_ptr
+  This becomes necessary with boost 1.57
+* export the proper library
+* Contributors: Michael Görner, Vincent Rabaud
+
 0.3.4 (2014-09-18)
 ------------------
 * move RViz documentation to object_recognition_ros_visualization
