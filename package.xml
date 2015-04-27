@@ -31,6 +31,7 @@
   <run_depend>pluginlib</run_depend>
   <run_depend>rostopic</run_depend>
 
+  <test_depend>rostest</test_depend>
   <test_depend>visualization_msgs</test_depend>
 
   <buildtool_depend>catkin</buildtool_depend>

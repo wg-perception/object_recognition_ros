@@ -30,6 +30,7 @@ add_subdirectory(src)
 
 # add tests
 if(CATKIN_ENABLE_TESTING)
+  find_package(rostest)
   add_subdirectory(test)
 endif()
 

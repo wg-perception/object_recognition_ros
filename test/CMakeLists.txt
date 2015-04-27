@@ -13,4 +13,4 @@ object_recognition_core_sink_test(Publisher "object_recognition_ros.io.sink" "{}
 object_recognition_core_config_test(${CMAKE_CURRENT_SOURCE_DIR}/../conf/detection.test.ros.ork)
 
 # test the actionlib server (requires roscoreto belaunched)
-#object_recognition_core_pytest(test_server)
+add_rostest(test_action_server.launch)
