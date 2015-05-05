@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """
-This file is meant to be used with test_server.py: it starts a recognition server for 5 seconds
+This file is meant to be used with test_client.py: it starts a recognition server for 10 seconds
 """
 from object_recognition_core.utils.training_detection_args import read_arguments_from_string
 from object_recognition_ros.server import RecognitionServer
@@ -9,7 +9,6 @@ import sys
 import ecto_ros
 import roslib
 import rospy
-from std_msgs.msg import String
 
 if __name__ == '__main__':
     ecto_ros.init([], "test_server_ecto_ros", False)
@@ -28,5 +27,4 @@ if __name__ == '__main__':
     server = RecognitionServer(ork_params)
 
     # timeout for the test
-    rospy.sleep(5.0)
-    
+    rospy.sleep(10.0)
