@@ -15,13 +15,13 @@ To run it, you just need to start it with:
 
 .. code-block:: sh
    
-      rosrun object_recognition_server server -c whatever_config_file.ork
+      rosrun object_recognition_ros server -c whatever_config_file.ork
 
 You can also test it using the client:
 
 .. code-block:: sh
 
-      rosrun object_recognition_server client
+      rosrun object_recognition_ros client
 
 And that should display the received message.
 
