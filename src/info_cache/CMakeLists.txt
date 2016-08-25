@@ -1,3 +1,4 @@
+add_definitions(-std=c++11)
 add_library(object_information_cache info_cache.cpp)
 target_link_libraries(object_information_cache ${catkin_LIBRARIES})
 
