@@ -1,5 +1,5 @@
-Forthcoming
------------
+0.3.7 (2016-08-27)
+------------------
 * fix compilation on Jessie and Willy
 * no C++11 for indigo and jade
 * Contributors: Vincent Rabaud
