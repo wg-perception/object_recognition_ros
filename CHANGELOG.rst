@@ -1,3 +1,13 @@
+Forthcoming
+-----------
+* do not risk anything bellow kinetic
+* build on Kinetic
+* dox fix (fixes `#18 <https://github.com/wg-perception/object_recognition_ros/issues/18>`_)
+* try a longer wait to get the buildfarm working
+* convert tests into proper rostests
+* clean extensions
+* Contributors: Vincent Rabaud
+
 0.3.5 (2014-11-20)
 ------------------
 * remove useless dependency on tf
