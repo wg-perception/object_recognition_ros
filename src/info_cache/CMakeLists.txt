@@ -1,4 +1,5 @@
-if("$ENV{ROS_DISTRO}" STREQUAL "kinetic")
+if(("$ENV{ROS_DISTRO}" STREQUAL "indigo") OR ("$ENV{ROS_DISTRO}" STREQUAL "jade"))
+else()
 add_definitions(-std=c++11)
 endif()
 add_library(object_information_cache info_cache.cpp)
