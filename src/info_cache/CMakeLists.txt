@@ -1,4 +1,6 @@
+if("$ENV{ROS_DISTRO}" STREQUAL "kinetic")
 add_definitions(-std=c++11)
+endif()
 add_library(object_information_cache info_cache.cpp)
 target_link_libraries(object_information_cache ${catkin_LIBRARIES})
 
