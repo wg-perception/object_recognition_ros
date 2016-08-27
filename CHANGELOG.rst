@@ -1,5 +1,5 @@
-Forthcoming
------------
+0.3.6 (2016-08-27)
+------------------
 * do not risk anything bellow kinetic
 * build on Kinetic
 * dox fix (fixes `#18 <https://github.com/wg-perception/object_recognition_ros/issues/18>`_)
